@@ -1,8 +1,8 @@
 # beans_logging_fastapi
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bybatkhuu/module.fastapi-logging/2.build-publish.yml?logo=GitHub)](https://github.com/bybatkhuu/module.fastapi-logging/actions/workflows/2.build-publish.yml)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/bybatkhuu/module.fastapi-logging?logo=GitHub)](https://github.com/bybatkhuu/module.fastapi-logging/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bybatkhuu/module-fastapi-logging/2.build-publish.yml?logo=GitHub)](https://github.com/bybatkhuu/module-fastapi-logging/actions/workflows/2.build-publish.yml)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/bybatkhuu/module-fastapi-logging?logo=GitHub)](https://github.com/bybatkhuu/module-fastapi-logging/releases)
 [![PyPI](https://img.shields.io/pypi/v/beans-logging-fastapi?logo=PyPi)](https://pypi.org/project/beans-logging-fastapi)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/beans-logging-fastapi?logo=Python)](https://docs.conda.io/en/latest/miniconda.html)
 
@@ -39,12 +39,12 @@ pip install -U beans-logging-fastapi
 
 ```sh
 # Install package by git:
-pip install git+https://github.com/bybatkhuu/module.fastapi-logging.git
+pip install git+https://github.com/bybatkhuu/module-fastapi-logging.git
 ```
 
 **C.** Install from **pre-built release** files
 
-1. Download **`.whl`** or **`.tar.gz`** file from **releases** - <https://github.com/bybatkhuu/module.fastapi-logging/releases>
+1. Download **`.whl`** or **`.tar.gz`** file from **releases** - <https://github.com/bybatkhuu/module-fastapi-logging/releases>
 2. Install with pip:
 
 ```sh
@@ -58,7 +58,7 @@ pip install ./beans_logging_fastapi-[VERSION].tar.gz
 
 ```sh
 # Clone repository by git:
-git clone https://github.com/bybatkhuu/module.fastapi-logging.git beans_logging_fastapi
+git clone https://github.com/bybatkhuu/module-fastapi-logging.git beans_logging_fastapi
 cd ./beans_logging_fastapi
 
 # Install python build tool:
@@ -79,7 +79,7 @@ pip install ./dist/beans_logging_fastapi-${_VERSION}.tar.gz
 
 ```sh
 # Clone repository by git:
-git clone https://github.com/bybatkhuu/module.fastapi-logging.git beans_logging_fastapi
+git clone https://github.com/bybatkhuu/module-fastapi-logging.git beans_logging_fastapi
 cd ./beans_logging_fastapi
 
 # Install with editable development mode:
@@ -90,7 +90,7 @@ pip install -e .
 
 ```sh
 # Clone repository by git:
-git clone https://github.com/bybatkhuu/module.fastapi-logging.git beans_logging_fastapi
+git clone https://github.com/bybatkhuu/module-fastapi-logging.git beans_logging_fastapi
 cd ./beans_logging_fastapi
 
 # Install python dependencies:
@@ -106,7 +106,7 @@ To use `beans_logging_fastapi`:
 
 ### **FastAPI**
 
-[**`configs/logger.yml`**](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/examples/configs/logger.yml):
+[**`configs/logger.yml`**](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/examples/configs/logger.yml):
 
 ```yaml
 logger:
@@ -154,7 +154,7 @@ logger:
     http_json_err_path: "json.http/{app_name}.json.http.err.log"
 ```
 
-[**`.env`**](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/examples/.env):
+[**`.env`**](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/examples/.env):
 
 ```sh
 ENV=development
@@ -165,7 +165,7 @@ BEANS_LOGGING_CONFIG_PATH="./configs/logger.yml"
 BEANS_LOGGING_LOGS_DIR="./logs"
 ```
 
-[**`logger.py`**](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/examples/logger.py):
+[**`logger.py`**](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/examples/logger.py):
 
 ```python
 from beans_logging import Logger, LoggerLoader
@@ -204,7 +204,7 @@ if logger_loader.config.extra.http_json_enabled:
     )
 ```
 
-[**`main.py`**](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/examples/main.py):
+[**`main.py`**](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/examples/main.py):
 
 ```python
 from typing import Union
@@ -288,7 +288,7 @@ if __name__ == "__main__":
     )
 ```
 
-Run the [**`examples`**](https://github.com/bybatkhuu/module.fastapi-logging/tree/main/examples):
+Run the [**`examples`**](https://github.com/bybatkhuu/module-fastapi-logging/tree/main/examples):
 
 ```sh
 cd ./examples
@@ -335,7 +335,7 @@ python -m pytest -sv
 
 ## Environment Variables
 
-You can use the following environment variables inside [**`.env.example`**](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/.env.example) file:
+You can use the following environment variables inside [**`.env.example`**](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/.env.example) file:
 
 ```sh
 ENV=development
@@ -348,8 +348,8 @@ BEANS_LOGGING_LOGS_DIR="./logs"
 
 ## Documentation
 
-- [docs](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/docs/README.md)
-- [scripts](https://github.com/bybatkhuu/module.fastapi-logging/blob/main/docs/scripts/README.md)
+- [docs](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/docs/README.md)
+- [scripts](https://github.com/bybatkhuu/module-fastapi-logging/blob/main/docs/scripts/README.md)
 
 ---
 
