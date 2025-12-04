@@ -1,5 +1,5 @@
 site_name: FastAPI Logging (beans-logging-fastapi)
-site_description: "This is middleware for FastAPI HTTP access logs."
+site_description: "This is a middleware for FastAPI HTTP access logs. It is based on 'beans-logging' package."
 site_url: https://fastapi-logging-docs.bybatkhuu.dev
 repo_name: bybatkhuu/module-fastapi-logging
 repo_url: https://github.com/bybatkhuu/module-fastapi-logging
