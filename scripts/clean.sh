@@ -1,15 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
+
 ## --- Base --- ##
-# Getting path of this script file:
-_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+_SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-"$0"}")" >/dev/null 2>&1 && pwd -P)"
 _PROJECT_DIR="$(cd "${_SCRIPT_DIR}/.." >/dev/null 2>&1 && pwd)"
 cd "${_PROJECT_DIR}" || exit 2
-
-# Loading base script:
-# shellcheck disable=SC1091
-source ./scripts/base.sh
 ## --- Base --- ##
 
 
@@ -19,27 +15,42 @@ _IS_ALL=false
 ## --- Variables --- ##
 
 
+## --- Menu arguments --- ##
+_usage_help() {
+	cat <<EOF
+USAGE: ${0} [options]
+
+OPTIONS:
+    -a, --all     Enable all mode. Default: false
+    -h, --help    Show this help message.
+
+EXAMPLES:
+    ${0} -a
+    ${0} --all
+EOF
+}
+
+while [ $# -gt 0 ]; do
+	case "${1}" in
+		-a | --all)
+			_IS_ALL=true
+			shift;;
+		-h | --help)
+			_usage_help
+			exit 0;;
+		*)
+			echo "[ERROR]: Failed to parse argument -> ${1}!" >&2
+			_usage_help
+			exit 1;;
+	esac
+done
+## --- Menu arguments --- ##
+
+
 ## --- Main --- ##
 main()
 {
-	## --- Menu arguments --- ##
-	if [ -n "${1:-}" ]; then
-		for _input in "${@:-}"; do
-			case ${_input} in
-				-a | --all)
-					_IS_ALL=true
-					shift;;
-				*)
-					echoError "Failed to parsing input -> ${_input}"
-					echoInfo "USAGE: ${0} -a, --all"
-					exit 1;;
-			esac
-		done
-	fi
-	## --- Menu arguments --- ##
-
-
-	echoInfo "Cleaning..."
+	echo "[INFO]: Cleaning..."
 
 	find . -type f -name ".DS_Store" -print -delete || exit 2
 	find . -type f -name ".Thumbs.db" -print -delete || exit 2
@@ -54,11 +65,12 @@ main()
 	if [ "${_IS_ALL}" == true ]; then
 		rm -rfv ./build || exit 2
 		rm -rfv ./dist || exit 2
-		rm -rfv ./*.egg-info || exit 2
+		rm -rfv ./site || exit 2
+		find . -type d -name "*.egg-info" -exec rm -rfv {} + || exit 2
 	fi
 
-	echoOk "Done."
+	echo "[OK]: Done."
 }
 
-main "${@:-}"
+main
 ## --- Main --- ##

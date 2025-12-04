@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from typing import Union
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -11,14 +9,14 @@ from fastapi.responses import RedirectResponse
 
 load_dotenv()
 
-from beans_logging_fastapi import (
+from beans_logging_fastapi import (  # noqa: E402
     HttpAccessLogMiddleware,
     RequestHTTPInfoMiddleware,
     ResponseHTTPInfoMiddleware,
 )
 
-from logger import logger, logger_loader
-from __version__ import __version__
+from logger import logger, logger_loader  # noqa: E402
+from __version__ import __version__  # noqa: E402
 
 
 @asynccontextmanager
@@ -37,8 +35,8 @@ app = FastAPI(lifespan=lifespan, version=__version__)
 app.add_middleware(ResponseHTTPInfoMiddleware)
 app.add_middleware(
     HttpAccessLogMiddleware,
-    debug_format=logger_loader.config.extra.http_std_debug_format,
-    msg_format=logger_loader.config.extra.http_std_msg_format,
+    debug_format=logger_loader.config.extra.http_std_debug_format,  # type: ignore
+    msg_format=logger_loader.config.extra.http_std_msg_format,  # type: ignore
 )
 app.add_middleware(
     RequestHTTPInfoMiddleware, has_proxy_headers=True, has_cf_headers=True
@@ -51,7 +49,7 @@ def root():
 
 
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
+def read_item(item_id: int, q: str | None = None):
     return {"item_id": item_id, "q": q}
 
 
@@ -73,7 +71,7 @@ def error():
 if __name__ == "__main__":
     uvicorn.run(
         app="main:app",
-        host="0.0.0.0",
+        host="0.0.0.0",  # nosec B104
         port=8000,
         access_log=False,
         server_header=False,

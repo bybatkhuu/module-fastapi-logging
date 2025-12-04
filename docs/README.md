@@ -1,6 +1,21 @@
-# Documentation
+---
+title: Home
+hide:
+  - navigation
+#   - toc
+---
 
-## Pages
+# Introduction
 
-- [README](../README.md)
-- [scripts](./scripts/README.md)
+This is middleware for FastAPI HTTP access logs.
+
+## ✨ Features
+
+- Python module/package
+- Configuration
+- Test
+- Build
+- Documentation
+- Scripts
+- Examples
+- CI/CD
