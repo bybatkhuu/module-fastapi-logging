@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
+# import pytest
 
-import pytest
-
-from beans_logging import Logger, LoggerConfigPM, LoggerLoader
-from beans_logging_fastapi import HttpAccessLogMiddleware
+# from beans_logging import Logger, LoggerConfigPM, LoggerLoader
+# from beans_logging_fastapi import HttpAccessLogMiddleware
 
 
 # @pytest.fixture
