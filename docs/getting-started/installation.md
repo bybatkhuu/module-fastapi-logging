@@ -11,11 +11,7 @@ title: Installation
 **OPTION A.** [**RECOMMENDED**] Install from **PyPi**:
 
 ```sh
-# Install from staging TestPyPi:
-pip install -i https://test.pypi.org/simple -U beans-logging-fastapi
-
-# Or install from production PyPi:
-# pip install -U beans-logging-fastapi
+pip install -U beans-logging-fastapi
 ```
 
 **OPTION B.** Install latest version directly from **GitHub** repository:
