@@ -12,7 +12,9 @@ title: Sitemap
     - [Examples](../getting-started/examples.md)
     - [Error Codes](../getting-started/error-codes.md)
 - API Documentation
-    - [MyClass](../api-docs/MyClass.md)
+    - [HttpAccessLogMiddleware](../api-docs/HttpAccessLogMiddleware.md)
+    - [RequestHTTPInfoMiddleware](../api-docs/RequestHTTPInfoMiddleware.md)
+    - [ResponseHTTPInfoMiddleware](../api-docs/ResponseHTTPInfoMiddleware.md)
 - Development
     - [Test](../dev/test.md)
     - [Build](../dev/build.md)
@@ -38,10 +40,6 @@ title: Sitemap
     - [Related Projects](../dev/related-projects.md)
     - [Contributing](../dev/contributing.md)
     - [Roadmap](../dev/roadmap.md)
-- Research
-    - [Reports](../research/reports.md)
-    - [Benchmarks](../research/benchmarks.md)
-    - [References](../research/references.md)
 - [Release Notes](../release-notes.md)
 - About
     - [FAQ](../about/faq.md)
