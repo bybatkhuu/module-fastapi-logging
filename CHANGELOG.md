@@ -10,5 +10,3 @@
 
 
 **Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v1.1.2...v2.0.0
-
-

@@ -14,9 +14,29 @@ logger:
       enabled: true
     default.err.json_handler:
       enabled: true
+
+    fastapi.http.file_handler:
+      enabled: true
+      sink: "http/{app_name}.http.access.log"
+    fastapi.http.err.file_handler:
+      enabled: true
+      sink: "http/{app_name}.http.err.log"
+    fastapi.http.json_handler:
+      enabled: true
+      sink: "http.json/{app_name}.http.json.access.log"
+    fastapi.http.err.json_handler:
+      enabled: true
+      sink: "http.json/{app_name}.http.json.err.log"
+  fastapi:
+    std_debug_format: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+    std_msg_format: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+    file_format: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+    file_tz: "localtime"
+
   extra:
     http_std_debug_format: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     http_std_msg_format: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+
     http_file_enabled: true
     http_file_format: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
     http_file_tz: "localtime"

@@ -3,9 +3,13 @@
 from ._filters import use_http_filter
 from ._formats import http_file_format, http_file_json_format
 from ._handlers import add_http_file_handler, add_http_file_json_handler
-from ._middlewares import RequestHTTPInfoMiddleware, ResponseHTTPInfoMiddleware
-from ._base import HttpAccessLogMiddleware
+from ._middlewares import (
+    RequestHTTPInfoMiddleware,
+    ResponseHTTPInfoMiddleware,
+    HttpAccessLogMiddleware,
+)
 from ._async_log import *
+from ._core import init_logger
 from .__version__ import __version__
 
 
@@ -27,5 +31,6 @@ __all__ = [
     "async_log_error",
     "async_log_critical",
     "async_log_level",
+    "init_logger",
     "__version__",
 ]
