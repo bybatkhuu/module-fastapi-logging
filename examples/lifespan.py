@@ -16,6 +16,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         app (FastAPI, required): FastAPI application instance.
     """
 
+    logger.trace("TRACE diagnosis is ON!")
+    logger.debug("DEBUG mode is ON!")
     logger.info("Preparing to startup...")
 
     # Add startup code here...

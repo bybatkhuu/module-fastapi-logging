@@ -235,34 +235,34 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
         BaseHTTPMiddleware: Base HTTP middleware class from starlette.
 
     Attributes:
-        _DEBUG_FORMAT     (str ): Default http access log debug message format. Defaults to
+        _DEBUG_FORMAT_STR (str ): Default http access log debug message format. Defaults to
             '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'.
-        _MSG_FORMAT       (str ): Default http access log message format. Defaults to
+        _FORMAT_STR       (str ): Default http access log message format. Defaults to
             '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"
                 {status_code} {content_length}B {response_time}ms'.
 
-        debug_format      (str ): Http access log debug message format. Defaults to
-                                    `HttpAccessLogMiddleware._DEBUG_FORMAT`.
-        msg_format        (str ): Http access log message format. Defaults to `HttpAccessLogMiddleware._MSG_FORMAT`.
+        debug_format_str  (str ): Http access log debug message format. Defaults to
+                                    `HttpAccessLogMiddleware._DEBUG_FORMAT_STR`.
+        format_str        (str ): Http access log message format. Defaults to `HttpAccessLogMiddleware._FORMAT_STR`.
         use_debug_log     (bool): If True, use debug log to log http access log. Defaults to True.
     """
 
-    _DEBUG_FORMAT = '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-    _MSG_FORMAT = (
-        '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> '
-        'HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+    _DEBUG_FORMAT_STR = '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+    _FORMAT_STR = (
+        '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+        " {status_code} {content_length}B {response_time}ms"
     )
 
     def __init__(
         self,
         app,
-        debug_format: str = _DEBUG_FORMAT,
-        msg_format: str = _MSG_FORMAT,
+        debug_format_str: str = _DEBUG_FORMAT_STR,
+        format_str: str = _FORMAT_STR,
         use_debug_log: bool = True,
     ):
         super().__init__(app)
-        self.debug_format = debug_format
-        self.msg_format = msg_format
+        self.debug_format_str = debug_format_str
+        self.format_str = format_str
         self.use_debug_log = use_debug_log
 
     async def dispatch(self, request: Request, call_next) -> Response:
@@ -276,7 +276,7 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
 
         # Debug log:
         if self.use_debug_log:
-            _debug_msg = self.debug_format.format(**_http_info)
+            _debug_msg = self.debug_format_str.format(**_http_info)
 
             # _logger.debug(_debug_msg)
             await run_in_threadpool(
@@ -296,26 +296,26 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
 
         # Http access log:
         _LEVEL = "INFO"
-        _msg_format = self.msg_format
+        _format_str = self.format_str
         if _http_info["status_code"] < 200:
             _LEVEL = "DEBUG"
-            _msg_format = f'<d>{_msg_format.replace("{status_code}", "<n><b><k>{status_code}</k></b></n>")}</d>'
+            _format_str = f'<d>{_format_str.replace("{status_code}", "<n><b><k>{status_code}</k></b></n>")}</d>'
         elif (200 <= _http_info["status_code"]) and (_http_info["status_code"] < 300):
             _LEVEL = "SUCCESS"
-            _msg_format = f'<w>{_msg_format.replace("{status_code}", "<lvl>{status_code}</lvl>")}</w>'
+            _format_str = f'<w>{_format_str.replace("{status_code}", "<lvl>{status_code}</lvl>")}</w>'
         elif (300 <= _http_info["status_code"]) and (_http_info["status_code"] < 400):
             _LEVEL = "INFO"
-            _msg_format = f'<d>{_msg_format.replace("{status_code}", "<n><b><c>{status_code}</c></b></n>")}</d>'
+            _format_str = f'<d>{_format_str.replace("{status_code}", "<n><b><c>{status_code}</c></b></n>")}</d>'
         elif (400 <= _http_info["status_code"]) and (_http_info["status_code"] < 500):
             _LEVEL = "WARNING"
-            _msg_format = _msg_format.replace("{status_code}", "<r>{status_code}</r>")
+            _format_str = _format_str.replace("{status_code}", "<r>{status_code}</r>")
         elif 500 <= _http_info["status_code"]:
             _LEVEL = "ERROR"
-            _msg_format = (
-                f'{_msg_format.replace("{status_code}", "<n>{status_code}</n>")}'
+            _format_str = (
+                f'{_format_str.replace("{status_code}", "<n>{status_code}</n>")}'
             )
 
-        _msg = _msg_format.format(**_http_info)
+        _msg = _format_str.format(**_http_info)
         # _logger.bind(http_info=_http_info).log(_LEVEL, _msg)
         await run_in_threadpool(_logger.bind(http_info=_http_info).log, _LEVEL, _msg)
         # Http access log

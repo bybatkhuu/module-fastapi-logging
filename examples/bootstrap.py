@@ -1,18 +1,20 @@
+# Standard libraries
+from typing import Any
+from collections.abc import Callable
+
 # Third-party libraries
 import uvicorn
 from uvicorn._types import ASGIApplication
 from pydantic import validate_call
 from fastapi import FastAPI
 
-from beans_logging_fastapi import init_logger
+from beans_logging_fastapi import add_logger
 
 # Internal modules
 from __version__ import __version__
+from config import config
 from lifespan import lifespan
-from middleware import add_middlewares
 from router import add_routers
-from mount import add_mounts
-from exception import add_exception_handlers
 
 
 def create_app() -> FastAPI:
@@ -24,18 +26,23 @@ def create_app() -> FastAPI:
 
     app = FastAPI(version=__version__, lifespan=lifespan)
 
-    init_logger(app=app)
+    # Add before other components:
+    add_logger(app=app, config=config.logger)
 
-    add_middlewares(app=app)
+    # Add other components after logger:
+
+    # add_middlewares(app=app)
     add_routers(app=app)
-    add_mounts(app=app)
-    add_exception_handlers(app=app)
+    # add_mounts(app=app)
+    # add_exception_handlers(app=app)
 
     return app
 
 
 @validate_call(config={"arbitrary_types_allowed": True})
-def run_server(app: ASGIApplication | str = "main:app") -> None:
+def run_server(
+    app: FastAPI | ASGIApplication | Callable[..., Any] | str = "main:app",
+) -> None:
     """Run uvicorn server.
 
     Args:
@@ -43,7 +50,7 @@ def run_server(app: ASGIApplication | str = "main:app") -> None:
     """
 
     uvicorn.run(
-        app="main:app",
+        app=app,
         host="0.0.0.0",  # nosec B104
         port=8000,
         access_log=False,

@@ -2,7 +2,6 @@
 
 # Third-party libraries
 from dotenv import load_dotenv
-from fastapi import FastAPI
 
 load_dotenv(override=True)
 
@@ -11,13 +10,13 @@ from bootstrap import create_app, run_server  # noqa: E402
 from logger import logger  # noqa: E402
 
 
-app: FastAPI = create_app()
+app = create_app()
 
 
 def main() -> None:
     """Main function."""
 
-    run_server(app="main:app")
+    run_server(app=app)
     return
 
 
