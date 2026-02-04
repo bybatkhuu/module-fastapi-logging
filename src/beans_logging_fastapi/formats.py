@@ -9,9 +9,9 @@ if TYPE_CHECKING:
 
 def http_file_format(
     record: "Record",
-    msg_format: str = (
-        '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" '
-        '{status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+    format_str: str = (
+        '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}"'
+        ' {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
     ),
     tz: str = "localtime",
 ) -> str:
@@ -19,7 +19,7 @@ def http_file_format(
 
     Args:
         record     (Record, required): Log record as dictionary.
-        msg_format (str   , optional): Log message format.
+        format_str (str   , optional): Log message format.
         tz         (str   , optional): Timezone for datetime field. Defaults to 'localtime'.
 
     Returns:
@@ -56,7 +56,7 @@ def http_file_format(
         _http_info["response_time"] = 0
 
     record["extra"]["http_info"] = _http_info
-    _msg = msg_format.format(**_http_info)
+    _msg = format_str.format(**_http_info)
 
     record["extra"]["http_message"] = _msg
     return "{extra[http_message]}\n"

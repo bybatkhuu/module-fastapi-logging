@@ -1,0 +1,3 @@
+[submodule "src/modules/beans_logging"]
+	path = src/modules/beans_logging
+	url = ../module-python-logging.git

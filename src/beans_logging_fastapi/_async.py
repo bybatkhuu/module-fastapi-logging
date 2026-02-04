@@ -11,7 +11,7 @@ from beans_logging import logger, Logger
 async def async_log_http_error(
     request: Request,
     status_code: int,
-    msg_format: str = (
+    format_str: str = (
         '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> '
         'HTTP/{http_version}" <n>{status_code}</n>'
     ),
@@ -21,7 +21,7 @@ async def async_log_http_error(
     Args:
         request     (Request, required): Request instance.
         status_code (int    , required): HTTP status code.
-        msg_format  (str    , optional): Message format. Defaults to
+        format_str  (str    , optional): Message format. Defaults to
             '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"
                 <n>{status_code}</n>'.
     """
@@ -33,7 +33,7 @@ async def async_log_http_error(
         _http_info: dict[str, Any] = request.state.http_info
     _http_info["status_code"] = status_code
 
-    _msg = msg_format.format(**_http_info)
+    _msg = format_str.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True).bind(http_info=_http_info)
     await run_in_threadpool(_logger.error, _msg)
     return

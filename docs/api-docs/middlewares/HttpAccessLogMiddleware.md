@@ -4,4 +4,4 @@ title: HttpAccessLogMiddleware
 
 # HttpAccessLogMiddleware
 
-::: src.beans_logging_fastapi.HttpAccessLogMiddleware
+::: src.beans_logging_fastapi.middlewares.HttpAccessLogMiddleware
