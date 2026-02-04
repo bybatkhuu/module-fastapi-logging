@@ -17,14 +17,6 @@ logger:
   intercept:
     mute_modules: ["uvicorn.access"]
   handlers:
-    default.all.file_handler:
-      enabled: true
-    default.err.file_handler:
-      enabled: true
-    default.all.json_handler:
-      enabled: true
-    default.err.json_handler:
-      enabled: true
     http.access.file_handler:
       enabled: true
       sink: "http/{app_name}.http-access.log"
