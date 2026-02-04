@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "beans_logging_fastapi"
 authors = [{ name = "Batkhuu Byambajav", email = "batkhuu10@gmail.com" }]
-description = "This is a middleware for FastAPI HTTP access logs. It is based on 'beans-logging' package."
+description = "This is a HTTP access log module for FastAPI based on 'beans-logging' package."
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
 keywords = [

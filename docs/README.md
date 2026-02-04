@@ -7,7 +7,7 @@ hide:
 
 # Introduction
 
-This is a HTTP access logging module for **FastAPI** based on **'beans-logging'** package.
+This is a HTTP access log module for **FastAPI** based on **'beans-logging'** package.
 
 ## ✨ Features
 

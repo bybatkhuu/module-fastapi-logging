@@ -4,7 +4,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bybatkhuu/module-fastapi-logging/2.build-publish.yml?logo=GitHub)](https://github.com/bybatkhuu/module-fastapi-logging/actions/workflows/2.build-publish.yml)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/bybatkhuu/module-fastapi-logging?logo=GitHub&color=blue)](https://github.com/bybatkhuu/module-fastapi-logging/releases)
 
-This is a HTTP access logging module for **FastAPI** based on **'beans-logging'** package.
+This is a HTTP access log module for **FastAPI** based on **'beans-logging'** package.
 
 ## ✨ Features
 
