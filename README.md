@@ -3,6 +3,8 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bybatkhuu/module-fastapi-logging/2.build-publish.yml?logo=GitHub)](https://github.com/bybatkhuu/module-fastapi-logging/actions/workflows/2.build-publish.yml)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/bybatkhuu/module-fastapi-logging?logo=GitHub&color=blue)](https://github.com/bybatkhuu/module-fastapi-logging/releases)
+[![PyPI](https://img.shields.io/pypi/v/beans-logging?logo=PyPi)](https://pypi.org/project/beans-logging-fastapi)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/beans-logging-fastapi?logo=Python)](https://docs.conda.io/en/latest/miniconda.html)
 
 This is a HTTP access log module for **FastAPI** based on **'beans-logging'** package.
 
