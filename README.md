@@ -362,7 +362,7 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 [2026-01-01 12:00:01.586 +09:00 | OK    | anyio._backends._asyncio:986]: [c433596f728744aaa1cde63399dd3995] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 3.1ms
 ^C[2026-01-01 12:00:02.074 +09:00 | INFO  | uvicorn.server:264]: Shutting down
 [2026-01-01 12:00:02.177 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
-[2026-01-01 12:00:02.178 +09:00 | INFO  | lifespan:29]: Praparing to shutdown...
+[2026-01-01 12:00:02.178 +09:00 | INFO  | lifespan:29]: Preparing to shutdown...
 [2026-01-01 12:00:02.179 +09:00 | OK    | lifespan:31]: Finished preparation to shutdown.
 [2026-01-01 12:00:02.179 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
 [2026-01-01 12:00:02.180 +09:00 | INFO  | uvicorn.server:94]: Finished server process [64590]

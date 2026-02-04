@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield
 
-    logger.info("Praparing to shutdown...")
+    logger.info("Preparing to shutdown...")
     # Add shutdown code here...
     logger.success("Finished preparation to shutdown.")
 
