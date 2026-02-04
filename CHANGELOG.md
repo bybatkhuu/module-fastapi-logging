@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.1.0 (2026-02-04)
+
+<!-- Release notes generated using configuration in .github/release.yml at v4.1.0 -->
+
+## What's Changed
+### 📦 Dependencies
+* feat: update configuration loading to read all configs from directory… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/14
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v4.0.1...v4.1.0
+
 ## v4.0.1 (2026-02-04)
 
 <!-- Release notes generated using configuration in .github/release.yml at v4.0.1 -->
