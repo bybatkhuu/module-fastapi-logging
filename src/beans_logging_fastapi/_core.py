@@ -11,13 +11,14 @@ else:
 from beans_logging import LoggerLoader
 
 from .constants import (
+    HTTP_ACCESS_STD_HANDLER_NAME,
     HTTP_ACCESS_FILE_HANDLER_NAME,
     HTTP_ERR_FILE_HANDLER_NAME,
     HTTP_ACCESS_JSON_HANDLER_NAME,
     HTTP_ERR_JSON_HANDLER_NAME,
 )
 from .config import LoggerConfigPM
-from .filters import http_filter
+from .filters import http_std_filter, http_all_file_filter
 from .formats import http_file_format, http_json_format
 from .middlewares import (
     HttpAccessLogMiddleware,
@@ -56,8 +57,8 @@ def add_logger(
     app.add_middleware(ResponseHTTPInfoMiddleware)
     app.add_middleware(
         HttpAccessLogMiddleware,
-        debug_format_str=config.http.std.debug_format_str,
-        format_str=config.http.std.format_str,
+        debug_msg_format_str=config.http.std.debug_msg_format_str,
+        msg_format_str=config.http.std.msg_format_str,
     )
     app.add_middleware(
         RequestHTTPInfoMiddleware,
@@ -66,10 +67,12 @@ def add_logger(
     )
 
     for _name, _handler in logger_loader.config.handlers.items():
-        if (_name == HTTP_ACCESS_FILE_HANDLER_NAME) or (
+        if _name == HTTP_ACCESS_STD_HANDLER_NAME:
+            _handler.filter_ = http_std_filter
+        elif (_name == HTTP_ACCESS_FILE_HANDLER_NAME) or (
             _name == HTTP_ERR_FILE_HANDLER_NAME
         ):
-            _handler.filter_ = http_filter
+            _handler.filter_ = http_all_file_filter
             _handler.format_ = lambda record: http_file_format(
                 record=record,
                 format_str=config.http.file.format_str,
@@ -78,7 +81,7 @@ def add_logger(
         elif (_name == HTTP_ACCESS_JSON_HANDLER_NAME) or (
             _name == HTTP_ERR_JSON_HANDLER_NAME
         ):
-            _handler.filter_ = http_filter
+            _handler.filter_ = http_all_file_filter
             _handler.format_ = http_json_format
 
     logger: Logger = logger_loader.load()
