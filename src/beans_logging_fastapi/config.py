@@ -57,7 +57,7 @@ def get_default_handlers() -> dict[str, LogHandlerPM]:
     return _default_handlers
 
 
-def _get_default_intercept() -> InterceptConfigPM:
+def get_default_intercept() -> InterceptConfigPM:
     _default_intercept = InterceptConfigPM(mute_modules=["uvicorn.access"])
     return _default_intercept
 
@@ -111,7 +111,7 @@ class HttpConfigPM(ExtraBaseModel):
 
 class LoggerConfigPM(BaseLoggerConfigPM):
     http: HttpConfigPM = Field(default_factory=HttpConfigPM)
-    intercept: InterceptConfigPM = Field(default_factory=_get_default_intercept)
+    intercept: InterceptConfigPM = Field(default_factory=get_default_intercept)
     handlers: dict[str, LogHandlerPM] = Field(default_factory=get_default_handlers)
 
     @field_validator("handlers", mode="before")
@@ -159,5 +159,10 @@ class LoggerConfigPM(BaseLoggerConfigPM):
 
 __all__ = [
     "LoggerConfigPM",
+    "HttpConfigPM",
+    "StdConfigPM",
+    "FileConfigPM",
+    "HeadersConfigPM",
+    "get_default_intercept",
     "get_default_handlers",
 ]
