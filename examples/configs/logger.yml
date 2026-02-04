@@ -17,15 +17,15 @@ logger:
   intercept:
     mute_modules: ["uvicorn.access"]
   handlers:
-    http.access.file_handler:
+    http_access_file_handler:
       enabled: true
       sink: "http/{app_name}.http-access.log"
-    http.err.file_handler:
+    http_err_file_handler:
       enabled: true
       sink: "http/{app_name}.http-err.log"
-    http.access.json_handler:
+    http_access_json_handler:
       enabled: true
       sink: "http.json/{app_name}.http-access.json.log"
-    http.err.json_handler:
+    http_err_json_handler:
       enabled: true
       sink: "http.json/{app_name}.http-err.json.log"

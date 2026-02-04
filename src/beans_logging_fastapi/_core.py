@@ -17,8 +17,8 @@ from .constants import (
     HTTP_ERR_JSON_HANDLER_NAME,
 )
 from .config import LoggerConfigPM
-from .filters import use_http_filter
-from .formats import http_file_format, http_file_json_format
+from .filters import http_filter
+from .formats import http_file_format, http_json_format
 from .middlewares import (
     HttpAccessLogMiddleware,
     RequestHTTPInfoMiddleware,
@@ -69,7 +69,7 @@ def add_logger(
         if (_name == HTTP_ACCESS_FILE_HANDLER_NAME) or (
             _name == HTTP_ERR_FILE_HANDLER_NAME
         ):
-            _handler.filter_ = use_http_filter
+            _handler.filter_ = http_filter
             _handler.format_ = lambda record: http_file_format(
                 record=record,
                 format_str=config.http.file.format_str,
@@ -78,8 +78,8 @@ def add_logger(
         elif (_name == HTTP_ACCESS_JSON_HANDLER_NAME) or (
             _name == HTTP_ERR_JSON_HANDLER_NAME
         ):
-            _handler.filter_ = use_http_filter
-            _handler.format_ = http_file_json_format
+            _handler.filter_ = http_filter
+            _handler.format_ = http_json_format
 
     logger: Logger = logger_loader.load()
     return logger

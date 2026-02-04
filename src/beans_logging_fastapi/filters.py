@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from loguru import Record
 
-from beans_logging.filters import use_all_filter
+from beans_logging.filters import all_handlers_filter
 
 
-def use_http_filter(record: "Record") -> bool:
+def http_filter(record: "Record") -> bool:
     """Filter message only for http access log handler by checking 'http_info' key in extra.
 
     Args:
@@ -16,7 +16,7 @@ def use_http_filter(record: "Record") -> bool:
         bool: True if record has 'http_info' key in extra, False otherwise.
     """
 
-    if not use_all_filter(record):
+    if not all_handlers_filter(record):
         return False
 
     if "http_info" not in record["extra"]:
@@ -26,5 +26,5 @@ def use_http_filter(record: "Record") -> bool:
 
 
 __all__ = [
-    "use_http_filter",
+    "http_filter",
 ]

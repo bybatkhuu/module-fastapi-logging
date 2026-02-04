@@ -3,7 +3,7 @@ from typing import Any
 import potato_util as utils
 from pydantic import Field, field_validator
 
-from beans_logging.constants import LogHandlerTypeEnum
+from beans_logging.constants import LogHandlerTypeEnum, DEFAULT_HANDLER_NAMES
 from beans_logging.schemas import LogHandlerPM
 from beans_logging.config import (
     get_default_handlers as get_base_handlers,
@@ -29,7 +29,7 @@ def get_default_handlers() -> dict[str, LogHandlerPM]:
 
     _base_handlers = get_base_handlers()
     for _name, _handler in _base_handlers.items():
-        if _name.startswith("default"):
+        if _name in DEFAULT_HANDLER_NAMES:
             _handler.enabled = True
 
     _http_handlers: dict[str, LogHandlerPM] = {
