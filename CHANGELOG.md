@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.0.0 (2026-02-04)
+
+<!-- Release notes generated using configuration in .github/release.yml at v4.0.0 -->
+
+## What's Changed
+### 💥 Breaking Changes
+* feat!: standardize logging configuration and simplify middleware by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/12
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v3.0.0...v4.0.0
+
 ## v3.0.0 (2026-02-04)
 
 <!-- Release notes generated using configuration in .github/release.yml at v3.0.0 -->
