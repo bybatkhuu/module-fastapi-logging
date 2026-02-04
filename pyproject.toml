@@ -51,10 +51,6 @@ dev = { file = [
 	"./requirements/requirements.dev.txt",
 ] }
 
-# [tool.pyright]
-# venvPath = "."
-# venv = ".venv"
-
 [project.urls]
 Homepage = "https://github.com/bybatkhuu/module-fastapi-logging"
 Documentation = "https://fastapi-logging-docs.bybatkhuu.dev"
