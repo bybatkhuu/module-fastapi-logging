@@ -3,7 +3,7 @@ import os
 from pydantic_settings import BaseSettings
 
 from potato_util import io as io_utils
-from beans_logging_fastapi import FastAPILoggerConfigPM
+from beans_logging_fastapi import LoggerConfigPM
 
 
 _config_path = os.path.join(os.getcwd(), "configs", "logger.yml")
@@ -13,7 +13,7 @@ if os.path.isfile(_config_path):
 
 
 class MainConfig(BaseSettings):
-    logger: FastAPILoggerConfigPM = FastAPILoggerConfigPM()
+    logger: LoggerConfigPM = LoggerConfigPM()
 
 
 config = MainConfig(**_config_data)

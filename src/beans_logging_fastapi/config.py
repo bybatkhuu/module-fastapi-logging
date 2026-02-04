@@ -9,7 +9,7 @@ from beans_logging.config import (
     get_default_handlers as get_base_handlers,
     ExtraBaseModel,
     InterceptConfigPM,
-    LoggerConfigPM,
+    LoggerConfigPM as BaseLoggerConfigPM,
 )
 
 from .constants import (
@@ -109,7 +109,7 @@ class HttpConfigPM(ExtraBaseModel):
     headers: HeadersConfigPM = Field(default_factory=HeadersConfigPM)
 
 
-class FastAPILoggerConfigPM(LoggerConfigPM):
+class LoggerConfigPM(BaseLoggerConfigPM):
     http: HttpConfigPM = Field(default_factory=HttpConfigPM)
     intercept: InterceptConfigPM = Field(default_factory=_get_default_intercept)
     handlers: dict[str, LogHandlerPM] = Field(default_factory=get_default_handlers)
@@ -158,6 +158,6 @@ class FastAPILoggerConfigPM(LoggerConfigPM):
 
 
 __all__ = [
-    "FastAPILoggerConfigPM",
+    "LoggerConfigPM",
     "get_default_handlers",
 ]

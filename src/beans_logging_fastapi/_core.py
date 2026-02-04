@@ -16,7 +16,7 @@ from .constants import (
     HTTP_ACCESS_JSON_HANDLER_NAME,
     HTTP_ERR_JSON_HANDLER_NAME,
 )
-from .config import FastAPILoggerConfigPM
+from .config import LoggerConfigPM
 from .filters import use_http_filter
 from .formats import http_file_format, http_file_json_format
 from .middlewares import (
@@ -29,7 +29,7 @@ from .middlewares import (
 @validate_call(config={"arbitrary_types_allowed": True})
 def add_logger(
     app: FastAPI,
-    config: FastAPILoggerConfigPM,
+    config: LoggerConfigPM,
     has_proxy_headers: bool | None = None,
     has_cf_headers: bool | None = None,
 ) -> "Logger":
