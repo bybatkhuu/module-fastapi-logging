@@ -1,2 +1,4 @@
 nav:
-  - "*"
+  - API Documentation: README.md
+  - Middlewares: middlewares/
+  # - "*"

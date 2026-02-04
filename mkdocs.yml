@@ -22,7 +22,7 @@ theme:
     - navigation.top
     - navigation.footer
     # - navigation.tabs.sticky
-    # - navigation.sections
+    - navigation.sections
     # - navigation.expand
     # - navigation.instant
     - toc.follow
@@ -33,22 +33,22 @@ theme:
     - content.code.annotate
   palette:
     - media: "(prefers-color-scheme)"
-      primary: black
-      accent: black
+      primary: green
+      accent: green
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: white
-      accent: white
+      primary: green
+      accent: green
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
-      accent: black
+      primary: green
+      accent: green
       toggle:
         icon: material/brightness-4
         name: Switch to light mode

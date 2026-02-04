@@ -7,15 +7,12 @@ hide:
 
 # Introduction
 
-This is middleware for FastAPI HTTP access logs.
+This is a HTTP access logging module for **FastAPI** based on **'beans-logging'** package.
 
 ## ✨ Features
 
-- Python module/package
-- Configuration
-- Test
-- Build
-- Documentation
-- Scripts
-- Examples
-- CI/CD
+- **Logger** based on **'beans-logging'** package
+- **FastAPI** HTTP access logging **middleware**
+- HTTP access log as structured JSON format
+- Predefined **configuration** for HTTP access logs
+- Easy to **install** and **use**

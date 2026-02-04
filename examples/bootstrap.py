@@ -24,17 +24,13 @@ def create_app() -> FastAPI:
         FastAPI: FastAPI application instance.
     """
 
-    app = FastAPI(version=__version__, lifespan=lifespan)
+    app = FastAPI(lifespan=lifespan, version=__version__)
 
-    # Add before other components:
+    # Add logger before any other components:
     add_logger(app=app, config=config.logger)
 
-    # Add other components after logger:
-
-    # add_middlewares(app=app)
+    # Add any other components after logger:
     add_routers(app=app)
-    # add_mounts(app=app)
-    # add_exception_handlers(app=app)
 
     return app
 
@@ -53,7 +49,7 @@ def run_server(
         app=app,
         host="0.0.0.0",  # nosec B104
         port=8000,
-        access_log=False,
+        access_log=False,  # Disable default uvicorn access log
         server_header=False,
         proxy_headers=False,
         forwarded_allow_ips="*",

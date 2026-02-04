@@ -33,6 +33,17 @@ def add_logger(
     has_proxy_headers: bool | None = None,
     has_cf_headers: bool | None = None,
 ) -> "Logger":
+    """Add and initialize logger middlewares and handlers to FastAPI application.
+
+    Args:
+        app               (FastAPI       , required): FastAPI application instance.
+        config            (LoggerConfigPM, required): Logger configuration model.
+        has_proxy_headers (bool | None   , optional): Whether to use proxy headers. Defaults to None.
+        has_cf_headers    (bool | None   , optional): Whether to use Cloudflare headers. Defaults to None.
+
+    Returns:
+        Logger: Initialized Logger instance.
+    """
 
     logger_loader = LoggerLoader(config=config)
 

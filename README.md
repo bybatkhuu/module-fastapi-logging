@@ -4,12 +4,15 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bybatkhuu/module-fastapi-logging/2.build-publish.yml?logo=GitHub)](https://github.com/bybatkhuu/module-fastapi-logging/actions/workflows/2.build-publish.yml)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/bybatkhuu/module-fastapi-logging?logo=GitHub&color=blue)](https://github.com/bybatkhuu/module-fastapi-logging/releases)
 
-This is a middleware for FastAPI HTTP access logs. It is based on **'beans-logging'** package.
+This is a HTTP access logging module for **FastAPI** based on **'beans-logging'** package.
 
 ## ✨ Features
 
 - **Logger** based on **'beans-logging'** package
 - **FastAPI** HTTP access logging **middleware**
+- HTTP access log as structured JSON format
+- Predefined **configuration** for HTTP access logs
+- Easy to **install** and **use**
 
 ---
 
@@ -101,28 +104,35 @@ To use `beans_logging_fastapi`:
 ```yaml
 logger:
   app_name: "fastapi-app"
+  default:
+    level:
+      base: TRACE
+  http:
+    std:
+      format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+    file:
+      format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+      tz: "localtime"
+    headers:
+      has_proxy: false
+      has_cf: false
   intercept:
     mute_modules: ["uvicorn.access"]
   handlers:
-    default.all.file_handler:
+    http.access.file_handler:
       enabled: true
-    default.err.file_handler:
+      sink: "http/{app_name}.http-access.log"
+    http.err.file_handler:
       enabled: true
-    default.all.json_handler:
+      sink: "http/{app_name}.http-err.log"
+    http.access.json_handler:
       enabled: true
-    default.err.json_handler:
+      sink: "http.json/{app_name}.http-access.json.log"
+    http.err.json_handler:
       enabled: true
-  extra:
-    http_std_debug_format: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-    http_std_msg_format: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-    http_file_enabled: true
-    http_file_format: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
-    http_file_tz: "localtime"
-    http_log_path: "http/{app_name}.http.access.log"
-    http_err_path: "http/{app_name}.http.err.log"
-    http_json_enabled: true
-    http_json_path: "http.json/{app_name}.http.json.access.log"
-    http_json_err_path: "http.json/{app_name}.http.json.err.log"
+      sink: "http.json/{app_name}.http-err.json.log"
 ```
 
 [**`.env`**](./examples/.env):
@@ -132,53 +142,163 @@ ENV=development
 DEBUG=true
 ```
 
-[**`logger.py`**](./examples/logger.py):
+[**`config.py`**](./examples/config.py):
 
 ```python
-from typing import TYPE_CHECKING
+import os
 
-if TYPE_CHECKING:
-    from loguru import Record
+from pydantic_settings import BaseSettings
 
-from beans_logging import Logger, LoggerLoader
-from beans_logging_fastapi import (
-    add_http_file_handler,
-    add_http_file_json_handler,
-    http_file_format,
-)
-
-logger_loader = LoggerLoader()
-logger: Logger = logger_loader.load()
+from potato_util import io as io_utils
+from beans_logging_fastapi import LoggerConfigPM
 
 
-def _http_file_format(record: "Record") -> str:
-    _format = http_file_format(
-        record=record,
-        msg_format=logger_loader.config.extra.http_file_format,  # type: ignore
-        tz=logger_loader.config.extra.http_file_tz,  # type: ignore
-    )
-    return _format
+_config_path = os.path.join(os.getcwd(), "configs", "logger.yml")
+_config_data = {}
+if os.path.isfile(_config_path):
+    _config_data = io_utils.read_config_file(config_path=_config_path)
 
 
-if logger_loader.config.extra.http_file_enabled:  # type: ignore
-    add_http_file_handler(
-        logger_loader=logger_loader,
-        log_path=logger_loader.config.extra.http_log_path,  # type: ignore
-        err_path=logger_loader.config.extra.http_err_path,  # type: ignore
-        formatter=_http_file_format,
-    )
+class MainConfig(BaseSettings):
+    logger: LoggerConfigPM = LoggerConfigPM()
 
-if logger_loader.config.extra.http_json_enabled:  # type: ignore
-    add_http_file_json_handler(
-        logger_loader=logger_loader,
-        log_path=logger_loader.config.extra.http_json_path,  # type: ignore
-        err_path=logger_loader.config.extra.http_json_err_path,  # type: ignore
-    )
+
+config = MainConfig(**_config_data)
 
 
 __all__ = [
+    "MainConfig",
+    "config",
+]
+```
+
+[**`logger.py`**](./examples/logger.py):
+
+```python
+from beans_logging_fastapi import logger
+
+__all__ = [
     "logger",
-    "logger_loader",
+]
+```
+
+[**`router.py`**](./examples/router.py):
+
+```python
+from pydantic import validate_call
+from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.responses import RedirectResponse
+
+router = APIRouter()
+
+
+@router.get("/")
+def root():
+    return {"Hello": "World"}
+
+
+@router.get("/items/{item_id}")
+def read_item(item_id: int, q: str | None = None):
+    return {"item_id": item_id, "q": q}
+
+
+@router.get("/continue", status_code=100)
+def get_continue():
+    return {}
+
+
+@router.get("/redirect")
+def redirect():
+    return RedirectResponse("/")
+
+
+@router.get("/error")
+def error():
+    raise HTTPException(status_code=500)
+
+
+@validate_call(config={"arbitrary_types_allowed": True})
+def add_routers(app: FastAPI) -> None:
+    """Add routers to FastAPI app.
+
+    Args:
+        app (FastAPI): FastAPI app instance.
+    """
+
+    app.include_router(router)
+
+    return
+
+
+__all__ = ["add_routers"]
+```
+
+[**`bootstrap.py`**](./examples/bootstrap.py):
+
+```python
+# Standard libraries
+from typing import Any
+from collections.abc import Callable
+
+# Third-party libraries
+import uvicorn
+from uvicorn._types import ASGIApplication
+from pydantic import validate_call
+from fastapi import FastAPI
+
+from beans_logging_fastapi import add_logger
+
+# Internal modules
+from __version__ import __version__
+from config import config
+from lifespan import lifespan
+from router import add_routers
+
+
+def create_app() -> FastAPI:
+    """Create FastAPI application instance.
+
+    Returns:
+        FastAPI: FastAPI application instance.
+    """
+
+    app = FastAPI(lifespan=lifespan, version=__version__)
+
+    # Add logger before any other components:
+    add_logger(app=app, config=config.logger)
+
+    # Add any other components after logger:
+    add_routers(app=app)
+
+    return app
+
+
+@validate_call(config={"arbitrary_types_allowed": True})
+def run_server(
+    app: FastAPI | ASGIApplication | Callable[..., Any] | str = "main:app",
+) -> None:
+    """Run uvicorn server.
+
+    Args:
+        app (Union[ASGIApplication, str], optional): ASGI application instance or module path.
+    """
+
+    uvicorn.run(
+        app=app,
+        host="0.0.0.0",  # nosec B104
+        port=8000,
+        access_log=False,  # Disable default uvicorn access log
+        server_header=False,
+        proxy_headers=False,
+        forwarded_allow_ips="*",
+    )
+
+    return
+
+
+__all__ = [
+    "create_app",
+    "run_server",
 ]
 ```
 
@@ -187,85 +307,32 @@ __all__ = [
 ```python
 #!/usr/bin/env python
 
-from typing import Union
-from contextlib import asynccontextmanager
-
-import uvicorn
+# Third-party libraries
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import RedirectResponse
 
-load_dotenv()
+load_dotenv(override=True)
 
-from beans_logging_fastapi import (
-    HttpAccessLogMiddleware,
-    RequestHTTPInfoMiddleware,
-    ResponseHTTPInfoMiddleware,
-)
-
-from logger import logger, logger_loader
-from __version__ import __version__
+# Internal modules
+from bootstrap import create_app, run_server  # noqa: E402
+from logger import logger  # noqa: E402
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    logger.info("Preparing to startup...")
-    logger.success("Finished preparation to startup.")
-    logger.info(f"API version: {__version__}")
-
-    yield
-    logger.info("Praparing to shutdown...")
-    logger.success("Finished preparation to shutdown.")
+app = create_app()
 
 
-app = FastAPI(lifespan=lifespan, version=__version__)
+def main() -> None:
+    """Main function."""
 
-app.add_middleware(ResponseHTTPInfoMiddleware)
-app.add_middleware(
-    HttpAccessLogMiddleware,
-    debug_format=logger_loader.config.extra.http_std_debug_format,  # type: ignore
-    msg_format=logger_loader.config.extra.http_std_msg_format,  # type: ignore
-)
-app.add_middleware(
-    RequestHTTPInfoMiddleware, has_proxy_headers=True, has_cf_headers=True
-)
-
-
-@app.get("/")
-def root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.get("/continue", status_code=100)
-def get_continue():
-    return {}
-
-
-@app.get("/redirect")
-def redirect():
-    return RedirectResponse("/")
-
-
-@app.get("/error")
-def error():
-    raise HTTPException(status_code=500)
+    run_server(app=app)
+    return
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-        app="main:app",
-        host="0.0.0.0",
-        port=8000,
-        access_log=False,
-        server_header=False,
-        proxy_headers=True,
-        forwarded_allow_ips="*",
-    )
+    logger.info("Starting server from 'main.py'...")
+    main()
+
+
+__all__ = ["app"]
 ```
 
 Run the [**`examples`**](./examples):
@@ -281,22 +348,24 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 **Output**:
 
 ```txt
-[2025-12-01 00:00:00.735 +09:00 | TRACE | beans_logging._intercept:96]: Intercepted modules: ['potato_util.io', 'concurrent', 'potato_util', 'fastapi', 'uvicorn.error', 'dotenv.main', 'potato_util._base', 'watchfiles.watcher', 'dotenv', 'potato_util.io._sync', 'asyncio', 'uvicorn', 'concurrent.futures', 'watchfiles', 'watchfiles.main']; Muted modules: ['uvicorn.access'];
-[2025-12-01 00:00:00.735 +09:00 | INFO  | uvicorn.server:84]: Started server process [13580]
-[2025-12-01 00:00:00.735 +09:00 | INFO  | uvicorn.lifespan.on:48]: Waiting for application startup.
-[2025-12-01 00:00:00.735 +09:00 | INFO  | main:25]: Preparing to startup...
-[2025-12-01 00:00:00.735 +09:00 | OK    | main:26]: Finished preparation to startup.
-[2025-12-01 00:00:00.735 +09:00 | INFO  | main:27]: API version: 0.0.0
-[2025-12-01 00:00:00.735 +09:00 | INFO  | uvicorn.lifespan.on:62]: Application startup complete.
-[2025-12-01 00:00:00.735 +09:00 | INFO  | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-[2025-12-01 00:00:00.736 +09:00 | DEBUG | anyio._backends._asyncio:986]: [4386400aab364895ba272f3200d2a778] 127.0.0.1 - "GET / HTTP/1.1"
-[2025-12-01 00:00:00.736 +09:00 | OK    | anyio._backends._asyncio:986]: [4386400aab364895ba272f3200d2a778] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 0.9ms
-^C[2025-12-01 00:00:00.750 +09:00 | INFO  | uvicorn.server:264]: Shutting down
-[2025-12-01 00:00:00.750 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
-[2025-12-01 00:00:00.750 +09:00 | INFO  | main:30]: Praparing to shutdown...
-[2025-12-01 00:00:00.750 +09:00 | OK    | main:31]: Finished preparation to shutdown.
-[2025-12-01 00:00:00.750 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
-[2025-12-01 00:00:00.750 +09:00 | INFO  | uvicorn.server:94]: Finished server process [13580]
+[2026-01-01 12:00:00.907 +09:00 | TRACE | beans_logging.intercepters:96]: Intercepted modules: ['concurrent.futures', 'potato_util', 'watchfiles.watcher', 'potato_util.io._sync', 'concurrent', 'uvicorn', 'fastapi', 'uvicorn.error', 'dotenv.main', 'watchfiles.main', 'asyncio', 'dotenv', 'potato_util._base', 'potato_util.io', 'watchfiles']; Muted modules: ['uvicorn.access'];
+[2026-01-01 12:00:00.908 +09:00 | INFO  | uvicorn.server:84]: Started server process [64590]
+[2026-01-01 12:00:00.909 +09:00 | INFO  | uvicorn.lifespan.on:48]: Waiting for application startup.
+[2026-01-01 12:00:00.909 +09:00 | TRACE | lifespan:19]: TRACE diagnosis is ON!
+[2026-01-01 12:00:00.909 +09:00 | DEBUG | lifespan:20]: DEBUG mode is ON!
+[2026-01-01 12:00:00.909 +09:00 | INFO  | lifespan:21]: Preparing to startup...
+[2026-01-01 12:00:00.909 +09:00 | OK    | lifespan:24]: Finished preparation to startup.
+[2026-01-01 12:00:00.909 +09:00 | INFO  | lifespan:25]: Version: 0.0.0
+[2026-01-01 12:00:00.909 +09:00 | INFO  | uvicorn.lifespan.on:62]: Application startup complete.
+[2026-01-01 12:00:00.911 +09:00 | INFO  | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[2026-01-01 12:00:01.582 +09:00 | DEBUG | anyio._backends._asyncio:986]: [c433596f728744aaa1cde63399dd3995] 127.0.0.1 - "GET / HTTP/1.1"
+[2026-01-01 12:00:01.586 +09:00 | OK    | anyio._backends._asyncio:986]: [c433596f728744aaa1cde63399dd3995] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 3.1ms
+^C[2026-01-01 12:00:02.074 +09:00 | INFO  | uvicorn.server:264]: Shutting down
+[2026-01-01 12:00:02.177 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
+[2026-01-01 12:00:02.178 +09:00 | INFO  | lifespan:29]: Praparing to shutdown...
+[2026-01-01 12:00:02.179 +09:00 | OK    | lifespan:31]: Finished preparation to shutdown.
+[2026-01-01 12:00:02.179 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
+[2026-01-01 12:00:02.180 +09:00 | INFO  | uvicorn.server:94]: Finished server process [64590]
 ```
 
 👍
@@ -309,7 +378,7 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 
 ```yaml
 logger:
-  # app_name: "app"
+  # app_name: fastapi-app
   default:
     level:
       base: INFO
@@ -322,49 +391,68 @@ logger:
       retention: 90
       encoding: utf8
     custom_serialize: false
+  http:
+    std:
+      format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+    file:
+      format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+      tz: localtime
+    headers:
+      has_proxy: false
+      has_cf: false
   intercept:
     enabled: true
     only_base: false
     ignore_modules: []
     include_modules: []
-    mute_modules: ["uvicorn.access"]
+    mute_modules: [uvicorn.access]
   handlers:
     default.all.std_handler:
-      type: STD
+      enabled: true
+      h_type: STD
       format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>]: <level>{message}</level>"
       colorize: true
-      enabled: true
     default.all.file_handler:
-      type: FILE
-      sink: "{app_name}.all.log"
       enabled: true
+      h_type: FILE
+      sink: "{app_name}.all.log"
     default.err.file_handler:
-      type: FILE
+      enabled: true
+      h_type: FILE
       sink: "{app_name}.err.log"
       error: true
-      enabled: true
     default.all.json_handler:
-      type: FILE
-      sink: "json/{app_name}.json.all.log"
-      serialize: true
       enabled: true
+      h_type: FILE
+      sink: "json/{app_name}.all.json.log"
+      serialize: true
     default.err.json_handler:
-      type: FILE
-      sink: "json/{app_name}.json.err.log"
+      enabled: true
+      h_type: FILE
+      sink: "json/{app_name}.err.json.log"
       serialize: true
       error: true
+    http.access.file_handler:
       enabled: true
+      h_type: FILE
+      sink: "http/{app_name}.http-access.log"
+    http.err.file_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http/{app_name}.http-err.log"
+      error: true
+    http.access.json_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http.json/{app_name}.http-access.json.log"
+    http.err.json_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http.json/{app_name}.http-err.json.log"
+      error: true
   extra:
-    http_std_debug_format: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-    http_std_msg_format: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-    http_file_enabled: true
-    http_file_format: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
-    http_file_tz: "localtime"
-    http_log_path: "http/{app_name}.http.access.log"
-    http_err_path: "http/{app_name}.http.err.log"
-    http_json_enabled: true
-    http_json_path: "http.json/{app_name}.http.json.access.log"
-    http_json_err_path: "http.json/{app_name}.http.json.err.log"
 ```
 
 ### 🌎 Environment Variables
