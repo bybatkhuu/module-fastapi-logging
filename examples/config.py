@@ -6,10 +6,10 @@ from potato_util import io as io_utils
 from beans_logging_fastapi import LoggerConfigPM
 
 
-_config_path = os.path.join(os.getcwd(), "configs", "logger.yml")
 _config_data = {}
-if os.path.isfile(_config_path):
-    _config_data = io_utils.read_config_file(config_path=_config_path)
+_configs_dir = os.path.join(os.getcwd(), "configs")
+if os.path.isdir(_configs_dir):
+    _config_data = io_utils.read_all_configs(configs_dir=_configs_dir)
 
 
 class MainConfig(BaseSettings):
