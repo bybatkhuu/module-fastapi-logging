@@ -1,5 +1,5 @@
 logger:
-  # app_name: "app"
+  # app_name: fastapi-app
   default:
     level:
       base: INFO
@@ -12,46 +12,65 @@ logger:
       retention: 90
       encoding: utf8
     custom_serialize: false
+  http:
+    std:
+      format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+    file:
+      format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+      tz: localtime
+    headers:
+      has_proxy: false
+      has_cf: false
   intercept:
     enabled: true
     only_base: false
     ignore_modules: []
     include_modules: []
-    mute_modules: ["uvicorn.access"]
+    mute_modules: [uvicorn.access]
   handlers:
     default.all.std_handler:
-      type: STD
+      enabled: true
+      h_type: STD
       format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>]: <level>{message}</level>"
       colorize: true
-      enabled: true
     default.all.file_handler:
-      type: FILE
-      sink: "{app_name}.all.log"
       enabled: true
+      h_type: FILE
+      sink: "{app_name}.all.log"
     default.err.file_handler:
-      type: FILE
+      enabled: true
+      h_type: FILE
       sink: "{app_name}.err.log"
       error: true
-      enabled: true
     default.all.json_handler:
-      type: FILE
-      sink: "json/{app_name}.json.all.log"
-      serialize: true
       enabled: true
+      h_type: FILE
+      sink: "json/{app_name}.all.json.log"
+      serialize: true
     default.err.json_handler:
-      type: FILE
-      sink: "json/{app_name}.json.err.log"
+      enabled: true
+      h_type: FILE
+      sink: "json/{app_name}.err.json.log"
       serialize: true
       error: true
+    http.access.file_handler:
       enabled: true
+      h_type: FILE
+      sink: "http/{app_name}.http-access.log"
+    http.err.file_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http/{app_name}.http-err.log"
+      error: true
+    http.access.json_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http.json/{app_name}.http-access.json.log"
+    http.err.json_handler:
+      enabled: true
+      h_type: FILE
+      sink: "http.json/{app_name}.http-err.json.log"
+      error: true
   extra:
-    http_std_debug_format: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-    http_std_msg_format: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-    http_file_enabled: true
-    http_file_format: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
-    http_file_tz: "localtime"
-    http_log_path: "http/{app_name}.http.access.log"
-    http_err_path: "http/{app_name}.http.err.log"
-    http_json_enabled: true
-    http_json_path: "http.json/{app_name}.http.json.access.log"
-    http_json_err_path: "http.json/{app_name}.http.json.err.log"
