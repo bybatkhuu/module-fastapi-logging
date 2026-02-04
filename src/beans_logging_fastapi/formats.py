@@ -62,7 +62,7 @@ def http_file_format(
     return "{extra[http_message]}\n"
 
 
-def http_file_json_format(record: "Record") -> str:
+def http_json_format(record: "Record") -> str:
     """Http access json log file format.
 
     Args:
@@ -91,5 +91,5 @@ def http_file_json_format(record: "Record") -> str:
 
 __all__ = [
     "http_file_format",
-    "http_file_json_format",
+    "http_json_format",
 ]

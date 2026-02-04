@@ -1,2 +1,2 @@
 fastapi>=0.99.1,<1.0.0
-beans-logging>=8.0.2,<9.0.0
+beans-logging>=9.0.0,<10.0.0

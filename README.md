@@ -348,24 +348,24 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 **Output**:
 
 ```txt
-[2026-01-01 12:00:00.907 +09:00 | TRACE | beans_logging.intercepters:96]: Intercepted modules: ['concurrent.futures', 'potato_util', 'watchfiles.watcher', 'potato_util.io._sync', 'concurrent', 'uvicorn', 'fastapi', 'uvicorn.error', 'dotenv.main', 'watchfiles.main', 'asyncio', 'dotenv', 'potato_util._base', 'potato_util.io', 'watchfiles']; Muted modules: ['uvicorn.access'];
-[2026-01-01 12:00:00.908 +09:00 | INFO  | uvicorn.server:84]: Started server process [64590]
-[2026-01-01 12:00:00.909 +09:00 | INFO  | uvicorn.lifespan.on:48]: Waiting for application startup.
-[2026-01-01 12:00:00.909 +09:00 | TRACE | lifespan:19]: TRACE diagnosis is ON!
-[2026-01-01 12:00:00.909 +09:00 | DEBUG | lifespan:20]: DEBUG mode is ON!
-[2026-01-01 12:00:00.909 +09:00 | INFO  | lifespan:21]: Preparing to startup...
-[2026-01-01 12:00:00.909 +09:00 | OK    | lifespan:24]: Finished preparation to startup.
-[2026-01-01 12:00:00.909 +09:00 | INFO  | lifespan:25]: Version: 0.0.0
-[2026-01-01 12:00:00.909 +09:00 | INFO  | uvicorn.lifespan.on:62]: Application startup complete.
-[2026-01-01 12:00:00.911 +09:00 | INFO  | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-[2026-01-01 12:00:01.582 +09:00 | DEBUG | anyio._backends._asyncio:986]: [c433596f728744aaa1cde63399dd3995] 127.0.0.1 - "GET / HTTP/1.1"
-[2026-01-01 12:00:01.586 +09:00 | OK    | anyio._backends._asyncio:986]: [c433596f728744aaa1cde63399dd3995] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 3.1ms
-^C[2026-01-01 12:00:02.074 +09:00 | INFO  | uvicorn.server:264]: Shutting down
-[2026-01-01 12:00:02.177 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
-[2026-01-01 12:00:02.178 +09:00 | INFO  | lifespan:29]: Preparing to shutdown...
-[2026-01-01 12:00:02.179 +09:00 | OK    | lifespan:31]: Finished preparation to shutdown.
-[2026-01-01 12:00:02.179 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
-[2026-01-01 12:00:02.180 +09:00 | INFO  | uvicorn.server:94]: Finished server process [64590]
+[2026-01-01 12:00:00.002 +09:00 | TRACE | beans_logging.intercepters:96]: Intercepted modules: ['uvicorn', 'potato_util', 'fastapi', 'uvicorn.error', 'watchfiles.watcher', 'concurrent.futures', 'watchfiles', 'asyncio', 'concurrent', 'potato_util._base', 'dotenv', 'dotenv.main', 'watchfiles.main', 'potato_util.io', 'potato_util.io._sync']; Muted modules: ['uvicorn.access'];
+[2026-01-01 12:00:00.003 +09:00 | INFO  | uvicorn.server:84]: Started server process [88375]
+[2026-01-01 12:00:00.003 +09:00 | INFO  | uvicorn.lifespan.on:48]: Waiting for application startup.
+[2026-01-01 12:00:00.004 +09:00 | TRACE | lifespan:19]: TRACE diagnosis is ON!
+[2026-01-01 12:00:00.004 +09:00 | DEBUG | lifespan:20]: DEBUG mode is ON!
+[2026-01-01 12:00:00.004 +09:00 | INFO  | lifespan:21]: Preparing to startup...
+[2026-01-01 12:00:00.004 +09:00 | OK    | lifespan:24]: Finished preparation to startup.
+[2026-01-01 12:00:00.004 +09:00 | INFO  | lifespan:25]: Version: 0.0.0
+[2026-01-01 12:00:00.005 +09:00 | INFO  | uvicorn.lifespan.on:62]: Application startup complete.
+[2026-01-01 12:00:00.006 +09:00 | INFO  | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[2026-01-01 12:00:01.775 +09:00 | DEBUG ]: [80138308bc00406387fb804cf6cc0e11] 127.0.0.1 - "GET / HTTP/1.1"
+[2026-01-01 12:00:01.783 +09:00 | OK    ]: [80138308bc00406387fb804cf6cc0e11] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 5.7ms
+^C[2026-01-01 12:00:02.368 +09:00 | INFO  | uvicorn.server:264]: Shutting down
+[2026-01-01 12:00:02.470 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
+[2026-01-01 12:00:02.472 +09:00 | INFO  | lifespan:29]: Preparing to shutdown...
+[2026-01-01 12:00:02.472 +09:00 | OK    | lifespan:31]: Finished preparation to shutdown.
+[2026-01-01 12:00:02.473 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
+[2026-01-01 12:00:02.474 +09:00 | INFO  | uvicorn.server:94]: Finished server process [88375]
 ```
 
 👍
@@ -390,12 +390,12 @@ logger:
       rotate_time: "00:00:00"
       retention: 90
       encoding: utf8
-    custom_serialize: false
+    use_custom_serialize: false
   http:
     std:
-      format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+      msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_msg_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: localtime
@@ -409,45 +409,50 @@ logger:
     include_modules: []
     mute_modules: [uvicorn.access]
   handlers:
-    default.all.std_handler:
+    all_std_handler:
       enabled: true
       h_type: STD
       format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>]: <level>{message}</level>"
       colorize: true
-    default.all.file_handler:
+    all_file_handler:
       enabled: true
       h_type: FILE
       sink: "{app_name}.all.log"
-    default.err.file_handler:
+    err_file_handler:
       enabled: true
       h_type: FILE
       sink: "{app_name}.err.log"
       error: true
-    default.all.json_handler:
+    all_json_handler:
       enabled: true
       h_type: FILE
       sink: "json/{app_name}.all.json.log"
       serialize: true
-    default.err.json_handler:
+    err_json_handler:
       enabled: true
       h_type: FILE
       sink: "json/{app_name}.err.json.log"
       serialize: true
       error: true
-    http.access.file_handler:
+    http_access_std_handler:
+      enabled: true
+      h_type: STD
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> ]: <level>{message}</level>"
+      colorize: true
+    http_access_file_handler:
       enabled: true
       h_type: FILE
       sink: "http/{app_name}.http-access.log"
-    http.err.file_handler:
+    http_err_file_handler:
       enabled: true
       h_type: FILE
       sink: "http/{app_name}.http-err.log"
       error: true
-    http.access.json_handler:
+    http_access_json_handler:
       enabled: true
       h_type: FILE
       sink: "http.json/{app_name}.http-access.json.log"
-    http.err.json_handler:
+    http_err_json_handler:
       enabled: true
       h_type: FILE
       sink: "http.json/{app_name}.http-err.json.log"
