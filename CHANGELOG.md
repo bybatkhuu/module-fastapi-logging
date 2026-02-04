@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.0.1 (2026-02-04)
+
+<!-- Release notes generated using configuration in .github/release.yml at v4.0.1 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: update import statements for Record type in filters and formats … by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/13
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v4.0.0...v4.0.1
+
 ## v4.0.0 (2026-02-04)
 
 <!-- Release notes generated using configuration in .github/release.yml at v4.0.0 -->
