@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from loguru import Record
+else:
+    from beans_logging.typing import Record
 
 from beans_logging.filters import all_handlers_filter
 

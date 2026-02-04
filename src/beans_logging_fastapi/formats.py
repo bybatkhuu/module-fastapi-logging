@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from loguru import Record
+else:
+    from beans_logging.typing import Record
 
 
 def http_file_format(
