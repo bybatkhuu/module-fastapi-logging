@@ -5,7 +5,6 @@ from pydantic_settings import BaseSettings
 from potato_util import io as io_utils
 from beans_logging_fastapi import LoggerConfigPM
 
-
 _config_data = {}
 _configs_dir = os.path.join(os.getcwd(), "configs")
 if os.path.isdir(_configs_dir):

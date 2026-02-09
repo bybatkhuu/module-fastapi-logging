@@ -9,7 +9,6 @@ load_dotenv(override=True)
 from bootstrap import create_app, run_server  # noqa: E402
 from logger import logger  # noqa: E402
 
-
 app = create_app()
 
 
