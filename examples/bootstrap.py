@@ -36,13 +36,14 @@ def create_app() -> FastAPI:
 
 
 @validate_call(config={"arbitrary_types_allowed": True})
-def run_server(
-    app: FastAPI | ASGIApplication | Callable[..., Any] | str = "main:app",
-) -> None:
+def run_server(app: FastAPI | ASGIApplication | Callable[..., Any] | str) -> None:
     """Run uvicorn server.
 
     Args:
-        app (Union[ASGIApplication, str], optional): ASGI application instance or module path.
+        app (FastAPI            |
+             ASGIApplication    |
+             Callable[..., Any] |
+             str                 , required): FastAPI application instance or ASGI application or import string.
     """
 
     uvicorn.run(
