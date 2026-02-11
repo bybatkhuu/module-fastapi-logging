@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.0.0 (2026-02-11)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.0.0 -->
+
+## What's Changed
+### 💥 Breaking Changes
+* feat!: removed 'default' option to simplify configuration by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/16
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v4.1.1...v5.0.0
+
 ## v4.1.1 (2026-02-11)
 
 <!-- Release notes generated using configuration in .github/release.yml at v4.1.1 -->
