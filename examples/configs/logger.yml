@@ -1,9 +1,8 @@
 logger:
   app_name: "fastapi-app"
-  default:
-    level:
-      base: TRACE
-    format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
+  level:
+    base: TRACE
+  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
   http:
     std:
       msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
