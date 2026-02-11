@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.1.1 (2026-02-11)
+
+<!-- Release notes generated using configuration in .github/release.yml at v4.1.1 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: update beans-logging version and changed async log to sync log i… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/15
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v4.1.0...v4.1.1
+
 ## v4.1.0 (2026-02-04)
 
 <!-- Release notes generated using configuration in .github/release.yml at v4.1.0 -->
