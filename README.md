@@ -106,9 +106,8 @@ To use `beans_logging_fastapi`:
 ```yaml
 logger:
   app_name: "fastapi-app"
-  default:
-    level:
-      base: TRACE
+  level:
+    base: TRACE
   http:
     std:
       format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
@@ -381,18 +380,17 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 ```yaml
 logger:
   # app_name: fastapi-app
-  default:
-    level:
-      base: INFO
-      err: WARNING
-    format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
-    file:
-      logs_dir: "./logs"
-      rotate_size: 10000000
-      rotate_time: "00:00:00"
-      retention: 90
-      encoding: utf8
-    use_custom_serialize: false
+  level:
+    base: INFO
+    err: WARNING
+  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
+  file:
+    logs_dir: "./logs"
+    rotate_size: 10000000
+    rotate_time: "00:00:00"
+    retention: 90
+    encoding: utf8
+  use_custom_serialize: false
   http:
     std:
       msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
