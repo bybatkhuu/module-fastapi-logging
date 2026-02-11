@@ -4,7 +4,8 @@ from typing import Any
 from collections.abc import Callable
 
 from fastapi import Request, Response
-from fastapi.concurrency import run_in_threadpool
+
+# from fastapi.concurrency import run_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from beans_logging import logger
@@ -284,16 +285,16 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
         if self.use_debug_log:
             _debug_msg = self.debug_msg_format_str.format(**_http_info)
 
-            # _logger.bind(
-            #     http_info=_http_info, disable_http_all_file_handlers=True
-            # ).debug(_debug_msg)
-            await run_in_threadpool(
-                _logger.bind(
-                    http_info=_http_info, disable_http_all_file_handlers=True
-                ).debug,
-                _debug_msg,
-            )
-        # Debug log
+            _logger.bind(
+                http_info=_http_info, disable_http_all_file_handlers=True
+            ).debug(_debug_msg)
+            # await run_in_threadpool(
+            #     _logger.bind(
+            #         http_info=_http_info, disable_http_all_file_handlers=True
+            #     ).debug,
+            #     _debug_msg,
+            # )
+        # Debug log.
 
         # Process request:
         response: Response = await call_next(request)
@@ -328,9 +329,9 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
             )
 
         _msg = _msg_format_str.format(**_http_info)
-        # _logger.bind(http_info=_http_info).log(_LEVEL, _msg)
-        await run_in_threadpool(_logger.bind(http_info=_http_info).log, _LEVEL, _msg)
-        # Http access log
+        _logger.bind(http_info=_http_info).log(_LEVEL, _msg)
+        # await run_in_threadpool(_logger.bind(http_info=_http_info).log, _LEVEL, _msg)
+        # Http access log.
 
         return response
 
