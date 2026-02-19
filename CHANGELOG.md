@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.1.1 (2026-02-19)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.1.1 -->
+
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v5.1.0...v5.1.1
+
 ## v5.1.0 (2026-02-19)
 
 <!-- Release notes generated using configuration in .github/release.yml at v5.1.0 -->
