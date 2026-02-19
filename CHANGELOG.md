@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.1.0 (2026-02-19)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.1.0 -->
+
+## What's Changed
+### ✨ Features
+* feat: update beans-logging version and add async HTTP error logging f… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/17
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v5.0.0...v5.1.0
+
 ## v5.0.0 (2026-02-11)
 
 <!-- Release notes generated using configuration in .github/release.yml at v5.0.0 -->
