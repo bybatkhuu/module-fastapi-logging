@@ -49,10 +49,10 @@ def add_logger(
     logger_loader = LoggerLoader(config=config)
 
     if has_proxy_headers is None:
-        has_proxy_headers = config.http.headers.has_proxy
+        has_proxy_headers = config.http.has_proxy_headers
 
     if has_cf_headers is None:
-        has_cf_headers = config.http.headers.has_cf
+        has_cf_headers = config.http.has_cf_headers
 
     app.add_middleware(ResponseHTTPInfoMiddleware)
     app.add_middleware(
