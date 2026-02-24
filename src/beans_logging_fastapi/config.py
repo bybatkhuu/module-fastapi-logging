@@ -107,15 +107,11 @@ class FileConfigPM(ExtraBaseModel):
     tz: str = Field(default="localtime", min_length=2, max_length=64)
 
 
-class HeadersConfigPM(ExtraBaseModel):
-    has_proxy: bool = Field(default=False)
-    has_cf: bool = Field(default=False)
-
-
 class HttpConfigPM(ExtraBaseModel):
     std: StdConfigPM = Field(default_factory=StdConfigPM)
     file: FileConfigPM = Field(default_factory=FileConfigPM)
-    headers: HeadersConfigPM = Field(default_factory=HeadersConfigPM)
+    has_proxy_headers: bool = Field(default=False)
+    has_cf_headers: bool = Field(default=False)
 
 
 class LoggerConfigPM(BaseLoggerConfigPM):
@@ -171,7 +167,7 @@ __all__ = [
     "HttpConfigPM",
     "StdConfigPM",
     "FileConfigPM",
-    "HeadersConfigPM",
+    # "HeadersConfigPM",
     "get_default_intercept",
     "get_default_handlers",
 ]
