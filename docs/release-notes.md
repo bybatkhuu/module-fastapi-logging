@@ -6,6 +6,17 @@ hide:
 
 # 📌 Release Notes
 
+## v5.2.0 (2026-02-24)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.2.0 -->
+
+## What's Changed
+### 💥 Breaking Changes
+* Enhance logging and rename headers configuration by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/18
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v5.1.1...v5.2.0
+
 ## v5.1.1 (2026-02-19)
 
 <!-- Release notes generated using configuration in .github/release.yml at v5.1.1 -->
