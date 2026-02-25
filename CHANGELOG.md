@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.2.1 (2026-02-25)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.2.1 -->
+
+## What's Changed
+### 💬 Other
+* fix: update has_proxy_headers and has_cf_headers to true in configura… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/19
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v5.2.0...v5.2.1
+
 ## v5.2.0 (2026-02-24)
 
 <!-- Release notes generated using configuration in .github/release.yml at v5.2.0 -->
