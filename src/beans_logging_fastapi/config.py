@@ -110,8 +110,8 @@ class FileConfigPM(ExtraBaseModel):
 class HttpConfigPM(ExtraBaseModel):
     std: StdConfigPM = Field(default_factory=StdConfigPM)
     file: FileConfigPM = Field(default_factory=FileConfigPM)
-    has_proxy_headers: bool = Field(default=False)
-    has_cf_headers: bool = Field(default=False)
+    has_proxy_headers: bool = Field(default=True)
+    has_cf_headers: bool = Field(default=True)
 
 
 class LoggerConfigPM(BaseLoggerConfigPM):
