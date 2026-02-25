@@ -116,8 +116,8 @@ logger:
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: "localtime"
-    has_proxy_headers: false
-    has_cf_headers: false
+    has_proxy_headers: true
+    has_cf_headers: true
   intercept:
     mute_modules: ["uvicorn.access"]
   handlers:
@@ -398,8 +398,8 @@ logger:
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: localtime
-    has_proxy_headers: false
-    has_cf_headers: false
+    has_proxy_headers: true
+    has_cf_headers: true
   intercept:
     enabled: true
     only_base: false
