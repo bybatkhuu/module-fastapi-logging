@@ -1,5 +1,16 @@
 # Changelog
 
+## v5.2.2 (2026-02-27)
+
+<!-- Release notes generated using configuration in .github/release.yml at v5.2.2 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: update beans-logging version to 10.0.3 and subproject commit ref… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/20
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v5.2.1...v5.2.2
+
 ## v5.2.1 (2026-02-25)
 
 <!-- Release notes generated using configuration in .github/release.yml at v5.2.1 -->
