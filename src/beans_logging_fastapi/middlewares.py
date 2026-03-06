@@ -271,9 +271,7 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
         self.use_debug_log = use_debug_log
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        _logger = logger.opt(colors=True, record=True).bind(
-            disable_all_std_handler=True
-        )
+        _logger = logger.opt(colors=True, record=True).bind(disable_std_handler=True)
 
         _http_info: dict[str, Any] = {}
         if hasattr(request.state, "http_info") and isinstance(
