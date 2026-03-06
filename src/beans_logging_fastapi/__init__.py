@@ -1,4 +1,4 @@
-from beans_logging import logger, LogLevelEnum
+from beans_logging import logger, LogLevelEnum, log_at
 
 from .__version__ import __version__
 from .config import LoggerConfigPM
@@ -14,5 +14,6 @@ __all__ = [
     "LoggerConfigPM",
     "async_log_http_error",
     "log_http_error",
+    "log_at",
     "async_log_at",
 ]
