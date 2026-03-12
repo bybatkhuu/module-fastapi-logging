@@ -1,5 +1,16 @@
 # Changelog
 
+## v6.0.2 (2026-03-12)
+
+<!-- Release notes generated using configuration in .github/release.yml at v6.0.2 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: correct parameter name in logger binding for HTTP error logging by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/23
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v6.0.1...v6.0.2
+
 ## v6.0.1 (2026-03-06)
 
 <!-- Release notes generated using configuration in .github/release.yml at v6.0.1 -->
