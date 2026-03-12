@@ -35,7 +35,7 @@ async def async_log_http_error(
 
     _msg = msg_format_str.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True).bind(
-        http_info=_http_info, disable_all_std_handler=True
+        http_info=_http_info, disable_std_handler=True
     )
     await run_in_threadpool(_logger.error, _msg)
     return
@@ -69,7 +69,7 @@ def log_http_error(
 
     _msg = msg_format_str.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True).bind(
-        http_info=_http_info, disable_all_std_handler=True
+        http_info=_http_info, disable_std_handler=True
     )
     _logger.error(_msg)
     return
