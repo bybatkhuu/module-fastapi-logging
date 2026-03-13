@@ -68,7 +68,7 @@ def log_http_error(
     _http_info["status_code"] = status_code
 
     _msg = msg_format_str.format(**_http_info)
-    _logger: Logger = logger.opt(colors=True, record=True).bind(
+    _logger: Logger = logger.opt(colors=True, record=True, depth=3).bind(
         http_info=_http_info, disable_std_handler=True
     )
     _logger.error(_msg)
