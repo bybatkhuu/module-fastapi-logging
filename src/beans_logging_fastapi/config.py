@@ -3,7 +3,11 @@ from typing import Any
 import potato_util as utils
 from pydantic import Field, field_validator
 
-from beans_logging.constants import LogHandlerTypeEnum, DEFAULT_HANDLER_NAMES
+from beans_logging.constants import (
+    LogHandlerTypeEnum,
+    DEFAULT_HANDLER_NAMES,
+    DEFAULT_STD_HANDLER_NAME,
+)
 from beans_logging.schemas import LogHandlerPM
 from beans_logging.config import (
     get_default_handlers as get_base_handlers,
@@ -33,30 +37,36 @@ def get_default_handlers() -> dict[str, LogHandlerPM]:
         if _name in DEFAULT_HANDLER_NAMES:
             _handler.enabled = True
 
+        if _name == DEFAULT_STD_HANDLER_NAME:
+            _handler.format_ = (
+                "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | "
+                "<w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
+            )
+
     _http_handlers: dict[str, LogHandlerPM] = {
         HTTP_ACCESS_STD_HANDLER_NAME: LogHandlerPM(
-            h_type=LogHandlerTypeEnum.STD,
+            type_=LogHandlerTypeEnum.STD,
             format_=(
-                "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> ]:"
-                " <level>{message}</level>"
+                "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | "
+                "<w>{extra[request_id]}</w>]: <level>{message}</level>"
             ),
             colorize=True,
         ),
         HTTP_ACCESS_FILE_HANDLER_NAME: LogHandlerPM(
-            h_type=LogHandlerTypeEnum.FILE,
+            type_=LogHandlerTypeEnum.FILE,
             sink="http/{app_name}.http-access.log",
         ),
         HTTP_ERR_FILE_HANDLER_NAME: LogHandlerPM(
-            h_type=LogHandlerTypeEnum.FILE,
+            type_=LogHandlerTypeEnum.FILE,
             sink="http/{app_name}.http-err.log",
             error=True,
         ),
         HTTP_ACCESS_JSON_HANDLER_NAME: LogHandlerPM(
-            h_type=LogHandlerTypeEnum.FILE,
+            type_=LogHandlerTypeEnum.FILE,
             sink="http.json/{app_name}.http-access.json.log",
         ),
         HTTP_ERR_JSON_HANDLER_NAME: LogHandlerPM(
-            h_type=LogHandlerTypeEnum.FILE,
+            type_=LogHandlerTypeEnum.FILE,
             sink="http.json/{app_name}.http-err.json.log",
             error=True,
         ),
@@ -74,7 +84,7 @@ def get_default_intercept() -> InterceptConfigPM:
 class StdConfigPM(ExtraBaseModel):
     msg_format_str: str = Field(
         default=(
-            '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
             " {status_code} {content_length}B {response_time}ms"
         ),
         min_length=8,
@@ -82,14 +92,14 @@ class StdConfigPM(ExtraBaseModel):
     )
     err_msg_format_str: str = Field(
         default=(
-            '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
             " <n>{status_code}</n>"
         ),
         min_length=8,
         max_length=512,
     )
     debug_msg_format_str: str = Field(
-        default='<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"',
+        default='{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"',
         min_length=8,
         max_length=512,
     )
@@ -115,6 +125,14 @@ class HttpConfigPM(ExtraBaseModel):
 
 
 class LoggerConfigPM(BaseLoggerConfigPM):
+    default_format: str = Field(
+        default=(
+            "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: "
+            "{message}"
+        ),
+        min_length=8,
+        max_length=512,
+    )
     http: HttpConfigPM = Field(default_factory=HttpConfigPM)
     intercept: InterceptConfigPM = Field(default_factory=get_default_intercept)
     handlers: dict[str, LogHandlerPM] = Field(default_factory=get_default_handlers)

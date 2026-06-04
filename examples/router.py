@@ -1,12 +1,15 @@
 from pydantic import validate_call
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
 
 @router.get("/")
-def root():
+def root(request: Request):
+    _logger = request.state.logger
+    _logger.info("Root endpoint accessed.")
+
     return {"Hello": "World"}
 
 

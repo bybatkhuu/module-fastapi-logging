@@ -3,19 +3,19 @@ logger:
   level:
     base: INFO
     err: WARNING
-  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
+  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: {message}"
   file:
     logs_dir: "./logs"
     rotate_size: 10000000
     rotate_time: "00:00:00"
     retention: 90
     encoding: utf8
-  use_custom_serialize: false
+  custom_serialize: false
   http:
     std:
-      msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_msg_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+      msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: localtime
@@ -27,53 +27,57 @@ logger:
     ignore_modules: []
     include_modules: []
     mute_modules: [uvicorn.access]
+  global_extra:
+    trace_id: "-"
+    request_id: "-"
+    user_id: "-"
   handlers:
     std_handler:
       enabled: true
-      h_type: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>]: <level>{message}</level>"
+      type_: STD
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
       colorize: true
     file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "{app_name}.all.log"
     err_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "{app_name}.err.log"
       error: true
     json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "json/{app_name}.all.json.log"
       serialize: true
     err_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "json/{app_name}.err.json.log"
       serialize: true
       error: true
     http_access_std_handler:
       enabled: true
-      h_type: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> ]: <level>{message}</level>"
+      type_: STD
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w>]: <level>{message}</level>"
       colorize: true
     http_access_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http/{app_name}.http-access.log"
     http_err_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http/{app_name}.http-err.log"
       error: true
     http_access_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http.json/{app_name}.http-access.json.log"
     http_err_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http.json/{app_name}.http-err.json.log"
       error: true
   extra:
