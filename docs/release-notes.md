@@ -6,6 +6,27 @@ hide:
 
 # 📌 Release Notes
 
+## v7.0.0 (2026-06-04)
+
+<!-- Release notes generated using configuration in .github/release.yml at v7.0.0 -->
+
+## What's Changed
+### 💥 Breaking Changes
+* Upgrade dependencies and enhance logging by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/49
+### ✨ Features
+* build(deps): bump https://github.com/psf/black from 26.1.0 to 26.3.1 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/45
+* build(deps): bump https://github.com/psf/black from 26.3.1 to 26.5.1 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/48
+### 🐛 Fixes
+* build(deps): bump https://github.com/PyCQA/bandit from 1.9.3 to 1.9.4 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/47
+* build(deps): bump https://github.com/gitleaks/gitleaks from v8.30.0 to 8.30.1 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/46
+### 📦 Dependencies
+* build(deps-dev): update setuptools-scm requirement from <10.0.0,>=8.0.4 to >=8.0.4,<11.0.0 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/26
+
+## New Contributors
+* @dependabot[bot] made their first contribution in https://github.com/bybatkhuu/module-fastapi-logging/pull/26
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v6.0.4...v7.0.0
+
 ## v6.0.4 (2026-03-13)
 
 <!-- Release notes generated using configuration in .github/release.yml at v6.0.4 -->
