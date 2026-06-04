@@ -162,7 +162,10 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
         if hasattr(request.state, "user_id"):
             _http_info["user_id"] = str(request.state.user_id)
 
+        _logger = logger.bind(request_id=_http_info["request_id"])
+
         # Set http info to request state:
+        request.state.logger = _logger
         request.state.http_info = _http_info
         response: Response = await call_next(request)
         return response
@@ -250,11 +253,10 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
     """
 
     _DEBUG_MSG_FORMAT_STR = (
-        '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u>'
-        ' HTTP/{http_version}"'
+        '{client_host} {user_id} "<u>{method} {url_path}</u>' ' HTTP/{http_version}"'
     )
     _MSG_FORMAT_STR = (
-        '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+        '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
         " {status_code} {content_length}B {response_time}ms"
     )
 
@@ -284,7 +286,9 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
             _debug_msg = self.debug_msg_format_str.format(**_http_info)
 
             _logger.bind(
-                http_info=_http_info, disable_http_all_file_handlers=True
+                http_info=_http_info,
+                request_id=_http_info.get("request_id", "-"),
+                disable_http_all_file_handlers=True,
             ).debug(_debug_msg)
             # await run_in_threadpool(
             #     _logger.bind(
@@ -327,7 +331,9 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
             )
 
         _msg = _msg_format_str.format(**_http_info)
-        _logger.bind(http_info=_http_info).log(_LEVEL, _msg)
+        _logger.bind(
+            http_info=_http_info, request_id=_http_info.get("request_id", "-")
+        ).log(_LEVEL, _msg)
         # await run_in_threadpool(_logger.bind(http_info=_http_info).log, _LEVEL, _msg)
         # Http access log.
 

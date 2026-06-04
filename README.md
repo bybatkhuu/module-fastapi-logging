@@ -108,29 +108,36 @@ logger:
   app_name: "fastapi-app"
   level:
     base: TRACE
+  default_format: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: {message}"
   http:
     std:
-      format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+      msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: "localtime"
-    has_proxy_headers: true
-    has_cf_headers: true
+    has_proxy_headers: false
+    has_cf_headers: false
   intercept:
     mute_modules: ["uvicorn.access"]
   handlers:
-    http.access.file_handler:
+    std_handler:
+      enabled: true
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
+    http_access_std_handler:
+      enabled: true
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w>]: <level>{message}</level>"
+    http_access_file_handler:
       enabled: true
       sink: "http/{app_name}.http-access.log"
-    http.err.file_handler:
+    http_err_file_handler:
       enabled: true
       sink: "http/{app_name}.http-err.log"
-    http.access.json_handler:
+    http_access_json_handler:
       enabled: true
       sink: "http.json/{app_name}.http-access.json.log"
-    http.err.json_handler:
+    http_err_json_handler:
       enabled: true
       sink: "http.json/{app_name}.http-err.json.log"
 ```
@@ -348,24 +355,25 @@ uvicorn main:app --host=0.0.0.0 --port=8000
 **Output**:
 
 ```txt
-[2026-01-01 12:00:00.002 +09:00 | TRACE | beans_logging.intercepters:96]: Intercepted modules: ['uvicorn', 'potato_util', 'fastapi', 'uvicorn.error', 'watchfiles.watcher', 'concurrent.futures', 'watchfiles', 'asyncio', 'concurrent', 'potato_util._base', 'dotenv', 'dotenv.main', 'watchfiles.main', 'potato_util.io', 'potato_util.io._sync']; Muted modules: ['uvicorn.access'];
-[2026-01-01 12:00:00.003 +09:00 | INFO  | uvicorn.server:84]: Started server process [88375]
-[2026-01-01 12:00:00.003 +09:00 | INFO  | uvicorn.lifespan.on:48]: Waiting for application startup.
-[2026-01-01 12:00:00.004 +09:00 | TRACE | lifespan:19]: TRACE diagnosis is ON!
-[2026-01-01 12:00:00.004 +09:00 | DEBUG | lifespan:20]: DEBUG mode is ON!
-[2026-01-01 12:00:00.004 +09:00 | INFO  | lifespan:21]: Preparing to startup...
-[2026-01-01 12:00:00.004 +09:00 | OK    | lifespan:24]: Finished preparation to startup.
-[2026-01-01 12:00:00.004 +09:00 | INFO  | lifespan:25]: Version: 0.0.0
-[2026-01-01 12:00:00.005 +09:00 | INFO  | uvicorn.lifespan.on:62]: Application startup complete.
-[2026-01-01 12:00:00.006 +09:00 | INFO  | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-[2026-01-01 12:00:01.775 +09:00 | DEBUG ]: [80138308bc00406387fb804cf6cc0e11] 127.0.0.1 - "GET / HTTP/1.1"
-[2026-01-01 12:00:01.783 +09:00 | OK    ]: [80138308bc00406387fb804cf6cc0e11] 127.0.0.1 - "GET / HTTP/1.1" 200 17B 5.7ms
-^C[2026-01-01 12:00:02.368 +09:00 | INFO  | uvicorn.server:264]: Shutting down
-[2026-01-01 12:00:02.470 +09:00 | INFO  | uvicorn.lifespan.on:67]: Waiting for application shutdown.
-[2026-01-01 12:00:02.472 +09:00 | INFO  | lifespan:29]: Preparing to shutdown...
-[2026-01-01 12:00:02.472 +09:00 | OK    | lifespan:31]: Finished preparation to shutdown.
-[2026-01-01 12:00:02.473 +09:00 | INFO  | uvicorn.lifespan.on:76]: Application shutdown complete.
-[2026-01-01 12:00:02.474 +09:00 | INFO  | uvicorn.server:94]: Finished server process [88375]
+[2026-06-05 00:55:29.335 +09:00 | TRACE | - | beans_logging.intercepters:96]: Intercepted modules: ['potato_util', 'dotenv.main', 'concurrent', 'potato_util.io', 'asyncio', 'fastapi', 'concurrent.futures', 'dotenv', 'uvicorn', 'watchfiles.watcher', 'potato_util.io._sync', 'watchfiles.main', 'potato_util._base', 'uvicorn.error', 'watchfiles']; Muted modules: ['uvicorn.access'];
+[2026-06-05 00:55:29.336 +09:00 | INFO  | - | uvicorn.server:84]: Started server process [95017]
+[2026-06-05 00:55:29.336 +09:00 | INFO  | - | uvicorn.lifespan.on:48]: Waiting for application startup.
+[2026-06-05 00:55:29.337 +09:00 | TRACE | - | lifespan:19]: TRACE diagnosis is ON!
+[2026-06-05 00:55:29.337 +09:00 | DEBUG | - | lifespan:20]: DEBUG mode is ON!
+[2026-06-05 00:55:29.337 +09:00 | INFO  | - | lifespan:21]: Preparing to startup...
+[2026-06-05 00:55:29.337 +09:00 | OK    | - | lifespan:24]: Finished preparation to startup.
+[2026-06-05 00:55:29.337 +09:00 | INFO  | - | lifespan:25]: Version: 0.0.0
+[2026-06-05 00:55:29.337 +09:00 | INFO  | - | uvicorn.lifespan.on:62]: Application startup complete.
+[2026-06-05 00:55:29.339 +09:00 | INFO  | - | uvicorn.server:216]: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+[2026-06-05 00:55:33.367 +09:00 | DEBUG | 58c916d045844314bb6c10b390ad5593]: 127.0.0.1 - "GET / HTTP/1.1"
+[2026-06-05 00:55:33.370 +09:00 | INFO  | 58c916d045844314bb6c10b390ad5593 | router:11]: Root endpoint accessed.
+[2026-06-05 00:55:33.371 +09:00 | OK    | 58c916d045844314bb6c10b390ad5593]: 127.0.0.1 - "GET / HTTP/1.1" 200 17B 3.0ms
+^C[2026-06-05 00:55:35.702 +09:00 | INFO  | - | uvicorn.server:264]: Shutting down
+[2026-06-05 00:55:35.805 +09:00 | INFO  | - | uvicorn.lifespan.on:67]: Waiting for application shutdown.
+[2026-06-05 00:55:35.805 +09:00 | INFO  | - | lifespan:29]: Preparing to shutdown...
+[2026-06-05 00:55:35.805 +09:00 | OK    | - | lifespan:31]: Finished preparation to shutdown.
+[2026-06-05 00:55:35.805 +09:00 | INFO  | - | uvicorn.lifespan.on:76]: Application shutdown complete.
+[2026-06-05 00:55:35.806 +09:00 | INFO  | - | uvicorn.server:94]: Finished server process [95017]
 ```
 
 👍
@@ -382,19 +390,19 @@ logger:
   level:
     base: INFO
     err: WARNING
-  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}]: {message}"
+  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: {message}"
   file:
     logs_dir: "./logs"
     rotate_size: 10000000
     rotate_time: "00:00:00"
     retention: 90
     encoding: utf8
-  use_custom_serialize: false
+  custom_serialize: false
   http:
     std:
-      msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_msg_format_str: '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_msg_format_str: '<n>[{request_id}]</n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+      msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     file:
       format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: localtime
@@ -406,53 +414,57 @@ logger:
     ignore_modules: []
     include_modules: []
     mute_modules: [uvicorn.access]
+  global_extra:
+    trace_id: "-"
+    request_id: "-"
+    user_id: "-"
   handlers:
     std_handler:
       enabled: true
-      h_type: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>]: <level>{message}</level>"
+      type_: STD
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
       colorize: true
     file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "{app_name}.all.log"
     err_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "{app_name}.err.log"
       error: true
     json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "json/{app_name}.all.json.log"
       serialize: true
     err_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "json/{app_name}.err.json.log"
       serialize: true
       error: true
     http_access_std_handler:
       enabled: true
-      h_type: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> ]: <level>{message}</level>"
+      type_: STD
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w>]: <level>{message}</level>"
       colorize: true
     http_access_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http/{app_name}.http-access.log"
     http_err_file_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http/{app_name}.http-err.log"
       error: true
     http_access_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http.json/{app_name}.http-access.json.log"
     http_err_json_handler:
       enabled: true
-      h_type: FILE
+      type_: FILE
       sink: "http.json/{app_name}.http-err.json.log"
       error: true
   extra:
