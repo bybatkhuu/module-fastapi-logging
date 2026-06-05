@@ -1,4 +1,4 @@
-from beans_logging import logger, LogLevelEnum, log_at
+from beans_logging import Logger, logger, LogLevelEnum, log_at
 
 from .__version__ import __version__
 from .config import LoggerConfigPM
@@ -8,6 +8,7 @@ from .mode import async_log_at
 
 __all__ = [
     "__version__",
+    "Logger",
     "logger",
     "LogLevelEnum",
     "add_logger",

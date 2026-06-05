@@ -108,15 +108,7 @@ logger:
   app_name: "fastapi-app"
   level:
     base: TRACE
-  default_format: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: {message}"
   http:
-    std:
-      msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-    file:
-      format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
-      tz: "localtime"
     has_proxy_headers: false
     has_cf_headers: false
   intercept:
@@ -124,10 +116,8 @@ logger:
   handlers:
     std_handler:
       enabled: true
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
     http_access_std_handler:
       enabled: true
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w>]: <level>{message}</level>"
     http_access_file_handler:
       enabled: true
       sink: "http/{app_name}.http-access.log"
@@ -140,6 +130,7 @@ logger:
     http_err_json_handler:
       enabled: true
       sink: "http.json/{app_name}.http-err.json.log"
+
 ```
 
 [**`.env`**](./examples/.env):
@@ -193,14 +184,17 @@ __all__ = [
 
 ```python
 from pydantic import validate_call
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
 
 @router.get("/")
-def root():
+def root(request: Request):
+    _logger = request.state.logger
+    _logger.info("Root endpoint accessed.")
+
     return {"Hello": "World"}
 
 
@@ -390,7 +384,7 @@ logger:
   level:
     base: INFO
     err: WARNING
-  format_str: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: {message}"
+  default_format: "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} {extra[request_id]}]: {message}"
   file:
     logs_dir: "./logs"
     rotate_size: 10000000
@@ -400,11 +394,11 @@ logger:
   custom_serialize: false
   http:
     std:
-      msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
-      err_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
-      debug_msg_format_str: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
+      sub_format: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" {status_code} {content_length}B {response_time}ms'
+      err_sub_format: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
+      debug_sub_format: '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
     file:
-      format_str: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+      format_: '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
       tz: localtime
     has_proxy_headers: true
     has_cf_headers: true
@@ -415,14 +409,14 @@ logger:
     include_modules: []
     mute_modules: [uvicorn.access]
   global_extra:
-    trace_id: "-"
-    request_id: "-"
-    user_id: "-"
+    trace_id: ""
+    request_id: ""
+    user_id: ""
   handlers:
     std_handler:
       enabled: true
       type_: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w> <d><w>{extra[request_id]}</w></d>]: <level>{message}</level>"
       colorize: true
     file_handler:
       enabled: true
@@ -447,7 +441,7 @@ logger:
     http_access_std_handler:
       enabled: true
       type_: STD
-      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{extra[request_id]}</w>]: <level>{message}</level>"
+      format: "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <d><w>{extra[request_id]}</w></d>]: <level>{message}</level>"
       colorize: true
     http_access_file_handler:
       enabled: true

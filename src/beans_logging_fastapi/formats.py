@@ -9,18 +9,18 @@ if TYPE_CHECKING:
 
 def http_file_format(
     record: "Record",
-    format_str: str = (
-        '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}"'
-        ' {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+    format_: str = (
+        '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" '
+        '{status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
     ),
     tz: str = "localtime",
 ) -> str:
     """Http access log file format.
 
     Args:
-        record     (Record, required): Log record as dictionary.
-        format_str (str   , optional): Log message format.
-        tz         (str   , optional): Timezone for datetime field. Defaults to 'localtime'.
+        record  (Record, required): Log record as dictionary.
+        format_ (str   , optional): Log message format.
+        tz      (str   , optional): Timezone for datetime field. Defaults to 'localtime'.
 
     Returns:
         str: Format for http access log record.
@@ -56,7 +56,7 @@ def http_file_format(
         _http_info["response_time"] = 0
 
     record["extra"]["http_info"] = _http_info
-    _msg = format_str.format(**_http_info)
+    _msg = format_.format(**_http_info)
 
     record["extra"]["http_message"] = _msg
     return "{extra[http_message]}\n"
@@ -89,7 +89,59 @@ def http_json_format(record: "Record") -> str:
     return "{extra[http_serialized]}\n"
 
 
+def id_std_format(record: "Record") -> str:
+    """Std output log format with user_id, trace_id, and request_id.
+
+    Args:
+        record (Record): Log record as dictionary.
+
+    Returns:
+        str: Format for std output log with user_id, trace_id, and request_id.
+    """
+
+    _user_id = record["extra"].get("user_id")
+    _trace_id = record["extra"].get("trace_id")
+    _request_id = record["extra"].get("request_id")
+    _request_id_part = f" | <d><w>{_request_id}</w></d>" if _request_id else ""
+    _trace_id_part = f" | <lc>{_trace_id}</lc>" if _trace_id else ""
+    _user_id_part = f" | <m>{_user_id}</m>" if _user_id else ""
+
+    _format = (
+        "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>"
+        f"{_request_id_part}{_trace_id_part}{_user_id_part}"
+        "]: <level>{message}</level>\n"
+    )
+    return _format
+
+
+def id_file_format(record: "Record") -> str:
+    """File log format with user_id, trace_id, and request_id.
+
+    Args:
+        record (Record): Log record as dictionary.
+
+    Returns:
+        str: Format for file log with user_id, trace_id, and request_id.
+    """
+
+    _user_id = record["extra"].get("user_id")
+    _trace_id = record["extra"].get("trace_id")
+    _request_id = record["extra"].get("request_id")
+    _request_id_part = f" | {_request_id}" if _request_id else ""
+    _trace_id_part = f" | {_trace_id}" if _trace_id else ""
+    _user_id_part = f" | {_user_id}" if _user_id else ""
+
+    _format = (
+        "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}"
+        f"{_request_id_part}{_trace_id_part}{_user_id_part}"
+        "]: {message}\n"
+    )
+    return _format
+
+
 __all__ = [
     "http_file_format",
     "http_json_format",
+    "id_std_format",
+    "id_file_format",
 ]
