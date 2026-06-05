@@ -11,19 +11,17 @@ from beans_logging import logger, Logger
 async def async_log_http_error(
     request: Request,
     status_code: int,
-    msg_format_str: str = (
-        '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u>'
-        ' HTTP/{http_version}" <n>{status_code}</n>'
+    sub_format: str = (
+        '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
     ),
 ) -> None:
     """Async Log HTTP error for unhandled Exception.
 
     Args:
-        request        (Request, required): Request instance.
-        status_code    (int    , required): HTTP status code.
-        msg_format_str (str    , optional): Message format. Defaults to
-            '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"
-                <n>{status_code}</n>'.
+        request     (Request, required): Request instance.
+        status_code (int    , required): HTTP status code.
+        sub_format  (str    , optional): Message format. Defaults to
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'.
     """
 
     _http_info: dict[str, Any] = {"request_id": request.state.request_id}
@@ -33,9 +31,11 @@ async def async_log_http_error(
         _http_info: dict[str, Any] = request.state.http_info
     _http_info["status_code"] = status_code
 
-    _msg = msg_format_str.format(**_http_info)
+    _msg = sub_format.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True).bind(
-        http_info=_http_info, disable_std_handler=True
+        http_info=_http_info,
+        request_id=_http_info.get("request_id", ""),
+        disable_std_handler=True,
     )
     await run_in_threadpool(_logger.error, _msg)
     return
@@ -45,19 +45,17 @@ async def async_log_http_error(
 def log_http_error(
     request: Request,
     status_code: int,
-    msg_format_str: str = (
-        '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u>'
-        ' HTTP/{http_version}" <n>{status_code}</n>'
+    sub_format: str = (
+        '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
     ),
 ) -> None:
     """Log HTTP error for unhandled Exception.
 
     Args:
-        request        (Request, required): Request instance.
-        status_code    (int    , required): HTTP status code.
-        msg_format_str (str    , optional): Message format. Defaults to
-            '<n><w>[{request_id}]</w></n> {client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"
-                <n>{status_code}</n>'.
+        request     (Request, required): Request instance.
+        status_code (int    , required): HTTP status code.
+        sub_format  (str    , optional): Message format. Defaults to
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'.
     """
 
     _http_info: dict[str, Any] = {"request_id": request.state.request_id}
@@ -67,9 +65,11 @@ def log_http_error(
         _http_info: dict[str, Any] = request.state.http_info
     _http_info["status_code"] = status_code
 
-    _msg = msg_format_str.format(**_http_info)
+    _msg = sub_format.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True, depth=3).bind(
-        http_info=_http_info, disable_std_handler=True
+        http_info=_http_info,
+        request_id=_http_info.get("request_id", ""),
+        disable_std_handler=True,
     )
     _logger.error(_msg)
     return

@@ -8,7 +8,7 @@ from beans_logging.constants import (
     DEFAULT_HANDLER_NAMES,
     DEFAULT_STD_HANDLER_NAME,
 )
-from beans_logging.schemas import LogHandlerPM
+from beans_logging.schemas import LogHandlerPM, FormatType
 from beans_logging.config import (
     get_default_handlers as get_base_handlers,
     ExtraBaseModel,
@@ -23,6 +23,7 @@ from .constants import (
     HTTP_ACCESS_JSON_HANDLER_NAME,
     HTTP_ERR_JSON_HANDLER_NAME,
 )
+from .formats import id_std_format, id_file_format
 
 
 def get_default_handlers() -> dict[str, LogHandlerPM]:
@@ -38,17 +39,18 @@ def get_default_handlers() -> dict[str, LogHandlerPM]:
             _handler.enabled = True
 
         if _name == DEFAULT_STD_HANDLER_NAME:
-            _handler.format_ = (
-                "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | "
-                "<w>{extra[request_id]}</w> | <w>{name}:{line}</w>]: <level>{message}</level>"
-            )
+            _handler.format_ = id_std_format
+            # _handler.format_ = (
+            #     "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | "
+            #     "<w>{name}:{line}</w> <d><w>{extra[request_id]}</w></d>]: <level>{message}</level>"
+            # )
 
     _http_handlers: dict[str, LogHandlerPM] = {
         HTTP_ACCESS_STD_HANDLER_NAME: LogHandlerPM(
             type_=LogHandlerTypeEnum.STD,
             format_=(
                 "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | "
-                "<w>{extra[request_id]}</w>]: <level>{message}</level>"
+                "<d><w>{extra[request_id]}</w></d>]: <level>{message}</level>"
             ),
             colorize=True,
         ),
@@ -81,57 +83,54 @@ def get_default_intercept() -> InterceptConfigPM:
     return _default_intercept
 
 
-class StdConfigPM(ExtraBaseModel):
-    msg_format_str: str = Field(
+class HttpStdConfigPM(ExtraBaseModel):
+    sub_format: str = Field(
         default=(
-            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-            " {status_code} {content_length}B {response_time}ms"
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" '
+            "{status_code} {content_length}B {response_time}ms"
         ),
         min_length=8,
         max_length=512,
     )
-    err_msg_format_str: str = Field(
+    err_sub_format: str = Field(
         default=(
-            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"'
-            " <n>{status_code}</n>"
+            '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" '
+            "<n>{status_code}</n>"
         ),
         min_length=8,
         max_length=512,
     )
-    debug_msg_format_str: str = Field(
+    debug_sub_format: str = Field(
         default='{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}"',
         min_length=8,
         max_length=512,
     )
 
 
-class FileConfigPM(ExtraBaseModel):
-    format_str: str = Field(
+class HttpFileConfigPM(ExtraBaseModel):
+    format_: str = Field(
         default=(
-            '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}"'
-            ' {status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
-        ),
-        min_length=8,
-        max_length=512,
+            '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" '
+            '{status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
+        )
     )
     tz: str = Field(default="localtime", min_length=2, max_length=64)
 
 
 class HttpConfigPM(ExtraBaseModel):
-    std: StdConfigPM = Field(default_factory=StdConfigPM)
-    file: FileConfigPM = Field(default_factory=FileConfigPM)
+    std: HttpStdConfigPM = Field(default_factory=HttpStdConfigPM)
+    file: HttpFileConfigPM = Field(default_factory=HttpFileConfigPM)
     has_proxy_headers: bool = Field(default=True)
     has_cf_headers: bool = Field(default=True)
 
 
 class LoggerConfigPM(BaseLoggerConfigPM):
-    default_format: str = Field(
-        default=(
-            "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} | {extra[request_id]}]: "
-            "{message}"
-        ),
-        min_length=8,
-        max_length=512,
+    default_format: FormatType = Field(
+        default=id_file_format,
+        # default=(
+        #     "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line} {extra[request_id]}]: "
+        #     "{message}"
+        # ),
     )
     http: HttpConfigPM = Field(default_factory=HttpConfigPM)
     intercept: InterceptConfigPM = Field(default_factory=get_default_intercept)
@@ -183,9 +182,8 @@ class LoggerConfigPM(BaseLoggerConfigPM):
 __all__ = [
     "LoggerConfigPM",
     "HttpConfigPM",
-    "StdConfigPM",
-    "FileConfigPM",
-    # "HeadersConfigPM",
+    "HttpStdConfigPM",
+    "HttpFileConfigPM",
     "get_default_intercept",
     "get_default_handlers",
 ]

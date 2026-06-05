@@ -57,8 +57,8 @@ def add_logger(
     app.add_middleware(ResponseHTTPInfoMiddleware)
     app.add_middleware(
         HttpAccessLogMiddleware,
-        debug_msg_format_str=config.http.std.debug_msg_format_str,
-        msg_format_str=config.http.std.msg_format_str,
+        debug_sub_format=config.http.std.debug_sub_format,
+        sub_format=config.http.std.sub_format,
     )
     app.add_middleware(
         RequestHTTPInfoMiddleware,
@@ -75,7 +75,7 @@ def add_logger(
             _handler.filter_ = http_all_file_filter
             _handler.format_ = lambda record: http_file_format(
                 record=record,
-                format_str=config.http.file.format_str,
+                format_=config.http.file.format_,
                 tz=config.http.file.tz,
             )
         elif (_name == HTTP_ACCESS_JSON_HANDLER_NAME) or (
