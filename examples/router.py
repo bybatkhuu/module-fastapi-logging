@@ -29,8 +29,16 @@ def redirect():
 
 
 @router.get("/error")
-def error():
-    raise HTTPException(status_code=500)
+def error(request: Request):
+    _logger = request.state.logger
+
+    try:
+        _ = 1 / 0
+    except Exception:
+        _logger.exception("Failed to divide by zero!")
+        raise HTTPException(status_code=500, detail="Failed to divide by zero!")
+
+    return {}
 
 
 @validate_call(config={"arbitrary_types_allowed": True})

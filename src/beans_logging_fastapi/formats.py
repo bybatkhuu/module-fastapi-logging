@@ -109,7 +109,7 @@ def id_std_format(record: "Record") -> str:
     _format = (
         "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>"
         f"{_request_id_part}{_trace_id_part}{_user_id_part}"
-        "]: <level>{message}</level>\n"
+        "]: <level>{message}</level>\n{exception}"
     )
     return _format
 
@@ -134,7 +134,7 @@ def id_file_format(record: "Record") -> str:
     _format = (
         "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}"
         f"{_request_id_part}{_trace_id_part}{_user_id_part}"
-        "]: {message}\n"
+        "]: {message}\n{exception}"
     )
     return _format
 

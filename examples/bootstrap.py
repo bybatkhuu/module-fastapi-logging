@@ -15,6 +15,7 @@ from __version__ import __version__
 from config import config
 from lifespan import lifespan
 from router import add_routers
+from exception import add_exception_handlers
 
 
 def create_app() -> FastAPI:
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
 
     # Add any other components after logger:
     add_routers(app=app)
+    add_exception_handlers(app=app)
 
     return app
 

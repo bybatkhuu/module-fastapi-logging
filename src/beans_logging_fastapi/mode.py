@@ -1,3 +1,4 @@
+import sys
 from typing import TYPE_CHECKING
 
 from pydantic import validate_call
@@ -42,9 +43,11 @@ async def async_log_at(
 
     if warn_mode == WarnEnum.ALWAYS:
         if level == LogLevelEnum.EXCEPTION:
-            await run_in_threadpool(logger.exception, message)
+            _exc_info = sys.exc_info()
+            await run_in_threadpool(logger.opt(exception=_exc_info).error, message)
         else:
             await run_in_threadpool(logger.log, level.name, message)
+
     elif warn_mode == WarnEnum.DEBUG:
         await run_in_threadpool(logger.debug, message)
 
