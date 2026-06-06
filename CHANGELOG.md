@@ -1,5 +1,16 @@
 # Changelog
 
+## v8.0.2 (2026-06-06)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.0.2 -->
+
+## What's Changed
+### 🐛 Fixes
+* feat: add exception handling middleware and update logging formats by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/51
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.0.1...v8.0.2
+
 ## v8.0.1 (2026-06-05)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.0.1 -->
