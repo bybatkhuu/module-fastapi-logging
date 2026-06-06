@@ -102,13 +102,13 @@ def id_std_format(record: "Record") -> str:
     _user_id = record["extra"].get("user_id")
     _trace_id = record["extra"].get("trace_id")
     _request_id = record["extra"].get("request_id")
-    _request_id_part = f" | <d><w>{_request_id}</w></d>" if _request_id else ""
-    _trace_id_part = f" | <lc>{_trace_id}</lc>" if _trace_id else ""
     _user_id_part = f" | <m>{_user_id}</m>" if _user_id else ""
+    _trace_id_part = f" | <lc>{_trace_id}</lc>" if _trace_id else ""
+    _request_id_part = f" | <d><w>{_request_id}</w></d>" if _request_id else ""
 
     _format = (
         "[<c>{time:YYYY-MM-DD HH:mm:ss.SSS Z}</c> | <level>{extra[level_short]:<5}</level> | <w>{name}:{line}</w>"
-        f"{_request_id_part}{_trace_id_part}{_user_id_part}"
+        f"{_user_id_part}{_trace_id_part}{_request_id_part}"
         "]: <level>{message}</level>\n{exception}"
     )
     return _format
@@ -127,13 +127,13 @@ def id_file_format(record: "Record") -> str:
     _user_id = record["extra"].get("user_id")
     _trace_id = record["extra"].get("trace_id")
     _request_id = record["extra"].get("request_id")
-    _request_id_part = f" | {_request_id}" if _request_id else ""
-    _trace_id_part = f" | {_trace_id}" if _trace_id else ""
     _user_id_part = f" | {_user_id}" if _user_id else ""
+    _trace_id_part = f" | {_trace_id}" if _trace_id else ""
+    _request_id_part = f" | {_request_id}" if _request_id else ""
 
     _format = (
         "[{time:YYYY-MM-DD HH:mm:ss.SSS Z} | {extra[level_short]:<5} | {name}:{line}"
-        f"{_request_id_part}{_trace_id_part}{_user_id_part}"
+        f"{_user_id_part}{_trace_id_part}{_request_id_part}"
         "]: {message}\n{exception}"
     )
     return _format
