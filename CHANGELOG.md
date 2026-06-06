@@ -1,5 +1,16 @@
 # Changelog
 
+## v8.0.3 (2026-06-06)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.0.3 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: reorder log format components for consistency in id_std_format a… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/52
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.0.2...v8.0.3
+
 ## v8.0.2 (2026-06-06)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.0.2 -->
