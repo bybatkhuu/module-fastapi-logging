@@ -137,15 +137,12 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
                     _http_info["h_cf_timezone"] = request.headers.get("cf-timezone")
 
         _http_info["method"] = request.method
-        _http_info["url_path"] = request.url.path
-        if "{" in _http_info["url_path"]:
-            _http_info["url_path"] = _http_info["url_path"].replace("{", "{{")
-        if "}" in _http_info["url_path"]:
-            _http_info["url_path"] = _http_info["url_path"].replace("}", "}}")
-        if "<" in _http_info["url_path"]:
-            _http_info["url_path"] = _http_info["url_path"].replace("<", "\\<")
+
+        _url_path = request.url.path
         if request.url.query:
-            _http_info["url_path"] = f"{request.url.path}?{request.url.query}"
+            _url_path = f"{_url_path}?{request.url.query}"
+        _url_path = _url_path.replace("{", "{{").replace("}", "}}").replace("<", "\\<")
+        _http_info["url_path"] = _url_path
 
         _http_info["url_query_params"] = request.query_params._dict
         _http_info["url_path_params"] = request.path_params

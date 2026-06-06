@@ -11,6 +11,7 @@ from beans_logging import logger, Logger
 async def async_log_http_error(
     request: Request,
     status_code: int,
+    exc: Exception | None = None,
     sub_format: str = (
         '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
     ),
@@ -18,26 +19,50 @@ async def async_log_http_error(
     """Async Log HTTP error for unhandled Exception.
 
     Args:
-        request     (Request, required): Request instance.
-        status_code (int    , required): HTTP status code.
-        sub_format  (str    , optional): Message format. Defaults to
+        request     (Request  , required): Request instance.
+        status_code (int      , required): HTTP status code.
+        exc         (Exception, optional): Exception instance. Defaults to None.
+        sub_format  (str      , optional): Message format. Defaults to
             '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'.
     """
 
-    _http_info: dict[str, Any] = {"request_id": request.state.request_id}
+    _http_info: dict[str, Any] = {}
     if hasattr(request.state, "http_info") and isinstance(
         request.state.http_info, dict
     ):
-        _http_info: dict[str, Any] = request.state.http_info
+        _http_info = request.state.http_info
+
+    _http_info.setdefault("request_id", "")
+    if hasattr(request.state, "request_id") and isinstance(
+        request.state.request_id, str
+    ):
+        _http_info["request_id"] = request.state.request_id
+
+    if "url_path" not in _http_info:
+        _url_path = request.url.path
+        if request.url.query:
+            _url_path = f"{_url_path}?{request.url.query}"
+        _url_path = _url_path.replace("{", "{{").replace("}", "}}").replace("<", "\\<")
+        _http_info["url_path"] = _url_path
+
+    _http_info.setdefault("client_host", request.client.host if request.client else "")
+    _http_info.setdefault("user_id", "-")
+    _http_info.setdefault("method", request.method)
+    _http_info.setdefault("http_version", request.scope.get("http_version", "1.1"))
     _http_info["status_code"] = status_code
 
     _msg = sub_format.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True).bind(
         http_info=_http_info,
-        request_id=_http_info.get("request_id", ""),
+        request_id=_http_info.get("request_id"),
         disable_std_handler=True,
     )
-    await run_in_threadpool(_logger.error, _msg)
+
+    if exc:
+        await run_in_threadpool(_logger.opt(exception=exc).error, _msg)
+    else:
+        await run_in_threadpool(_logger.error, _msg)
+
     return
 
 
@@ -45,6 +70,7 @@ async def async_log_http_error(
 def log_http_error(
     request: Request,
     status_code: int,
+    exc: Exception | None = None,
     sub_format: str = (
         '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'
     ),
@@ -52,26 +78,50 @@ def log_http_error(
     """Log HTTP error for unhandled Exception.
 
     Args:
-        request     (Request, required): Request instance.
-        status_code (int    , required): HTTP status code.
-        sub_format  (str    , optional): Message format. Defaults to
+        request     (Request  , required): Request instance.
+        status_code (int      , required): HTTP status code.
+        exc         (Exception, optional): Exception instance. Defaults to None.
+        sub_format  (str      , optional): Message format. Defaults to
             '{client_host} {user_id} "<u>{method} {url_path}</u> HTTP/{http_version}" <n>{status_code}</n>'.
     """
 
-    _http_info: dict[str, Any] = {"request_id": request.state.request_id}
+    _http_info: dict[str, Any] = {}
     if hasattr(request.state, "http_info") and isinstance(
         request.state.http_info, dict
     ):
-        _http_info: dict[str, Any] = request.state.http_info
+        _http_info = request.state.http_info
+
+    _http_info.setdefault("request_id", "")
+    if hasattr(request.state, "request_id") and isinstance(
+        request.state.request_id, str
+    ):
+        _http_info["request_id"] = request.state.request_id
+
+    if "url_path" not in _http_info:
+        _url_path = request.url.path
+        if request.url.query:
+            _url_path = f"{_url_path}?{request.url.query}"
+        _url_path = _url_path.replace("{", "{{").replace("}", "}}").replace("<", "\\<")
+        _http_info["url_path"] = _url_path
+
+    _http_info.setdefault("client_host", request.client.host if request.client else "")
+    _http_info.setdefault("user_id", "-")
+    _http_info.setdefault("method", request.method)
+    _http_info.setdefault("http_version", request.scope.get("http_version", "1.1"))
     _http_info["status_code"] = status_code
 
     _msg = sub_format.format(**_http_info)
     _logger: Logger = logger.opt(colors=True, record=True, depth=3).bind(
         http_info=_http_info,
-        request_id=_http_info.get("request_id", ""),
+        request_id=_http_info.get("request_id"),
         disable_std_handler=True,
     )
-    _logger.error(_msg)
+
+    if exc:
+        _logger.opt(exception=exc).error(_msg)
+    else:
+        _logger.error(_msg)
+
     return
 
 
