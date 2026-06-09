@@ -163,6 +163,7 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
 
         # Set http info to request state:
         request.state.logger = _logger
+        request.state.client_ip = _http_info.get("client_host", "")
         request.state.http_info = _http_info
         response: Response = await call_next(request)
         return response
