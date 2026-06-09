@@ -1,5 +1,16 @@
 # Changelog
 
+## v8.1.0 (2026-06-09)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.1.0 -->
+
+## What's Changed
+### ✨ Features
+* feat: add client IP to request state in RequestHTTPInfoMiddleware by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/53
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.0.3...v8.1.0
+
 ## v8.0.3 (2026-06-06)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.0.3 -->
