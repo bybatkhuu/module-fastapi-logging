@@ -6,6 +6,17 @@ hide:
 
 # 📌 Release Notes
 
+## v8.1.1 (2026-06-10)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.1.1 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: reorder user_id and trace_id in log formats for consistency. by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/54
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.1.0...v8.1.1
+
 ## v8.1.0 (2026-06-09)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.1.0 -->
