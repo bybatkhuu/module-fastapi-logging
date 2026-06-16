@@ -52,16 +52,18 @@ async def async_log_http_error(
     _http_info["status_code"] = status_code
 
     _msg = sub_format.format(**_http_info)
-    _logger: Logger = logger.opt(colors=True, record=True).bind(
+    _logger: Logger = logger.bind(
         http_info=_http_info,
         request_id=_http_info.get("request_id"),
         disable_std_handler=True,
     )
 
     if exc:
-        await run_in_threadpool(_logger.opt(exception=exc).error, _msg)
+        await run_in_threadpool(
+            _logger.opt(colors=True, record=True, exception=exc).error, _msg
+        )
     else:
-        await run_in_threadpool(_logger.error, _msg)
+        await run_in_threadpool(_logger.opt(colors=True, record=True).error, _msg)
 
     return
 
@@ -111,16 +113,16 @@ def log_http_error(
     _http_info["status_code"] = status_code
 
     _msg = sub_format.format(**_http_info)
-    _logger: Logger = logger.opt(colors=True, record=True, depth=3).bind(
+    _logger: Logger = logger.bind(
         http_info=_http_info,
         request_id=_http_info.get("request_id"),
         disable_std_handler=True,
     )
 
     if exc:
-        _logger.opt(exception=exc).error(_msg)
+        _logger.opt(colors=True, record=True, depth=3, exception=exc).error(_msg)
     else:
-        _logger.error(_msg)
+        _logger.opt(colors=True, record=True, depth=3).error(_msg)
 
     return
 
