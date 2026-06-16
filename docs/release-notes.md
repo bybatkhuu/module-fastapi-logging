@@ -6,6 +6,17 @@ hide:
 
 # 📌 Release Notes
 
+## v8.1.2 (2026-06-16)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.1.2 -->
+
+## What's Changed
+### 🐛 Fixes
+* fix: enhance logging options in async_log_http_error and log_http_err… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/55
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.1.1...v8.1.2
+
 ## v8.1.1 (2026-06-10)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.1.1 -->
