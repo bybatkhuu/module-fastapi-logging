@@ -1,5 +1,16 @@
 # Changelog
 
+## v8.2.0 (2026-06-17)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.2.0 -->
+
+## What's Changed
+### ✨ Features
+* feat: add options to ignore specific request paths in HttpAccessLogMi… by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/56
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.1.2...v8.2.0
+
 ## v8.1.2 (2026-06-16)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.1.2 -->
