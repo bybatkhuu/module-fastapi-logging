@@ -264,13 +264,33 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
         debug_sub_format: str = _DEBUG_SUB_FORMAT,
         sub_format: str = _SUB_FORMAT,
         use_debug_log: bool = True,
+        ignore_startswith: list[str] | None = None,
+        ignore_endswith: list[str] | None = None,
     ):
         super().__init__(app)
         self.debug_sub_format = debug_sub_format
         self.sub_format = sub_format
         self.use_debug_log = use_debug_log
+        self.ignore_startswith = ignore_startswith
+        self.ignore_endswith = ignore_endswith
 
     async def dispatch(self, request: Request, call_next) -> Response:
+        _ignore_log = False
+        if self.ignore_startswith:
+            for _path in self.ignore_startswith:
+                if request.url.path.startswith(_path):
+                    _ignore_log = True
+                    break
+
+        if self.ignore_endswith:
+            for _path in self.ignore_endswith:
+                if request.url.path.endswith(_path):
+                    _ignore_log = True
+                    break
+
+        if _ignore_log:
+            return await call_next(request)
+
         _logger = logger.opt(colors=True, record=True).bind(disable_std_handler=True)
 
         _http_info: dict[str, Any] = {}

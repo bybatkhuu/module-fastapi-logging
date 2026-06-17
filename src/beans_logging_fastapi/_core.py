@@ -59,6 +59,8 @@ def add_logger(
         HttpAccessLogMiddleware,
         debug_sub_format=config.http.std.debug_sub_format,
         sub_format=config.http.std.sub_format,
+        ignore_startswith=config.http.ignore_startswith,
+        ignore_endswith=config.http.ignore_endswith,
     )
     app.add_middleware(
         RequestHTTPInfoMiddleware,
