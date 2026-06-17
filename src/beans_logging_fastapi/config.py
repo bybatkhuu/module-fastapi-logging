@@ -122,6 +122,8 @@ class HttpConfigPM(ExtraBaseModel):
     file: HttpFileConfigPM = Field(default_factory=HttpFileConfigPM)
     has_proxy_headers: bool = Field(default=True)
     has_cf_headers: bool = Field(default=True)
+    ignore_startswith: list[str] = Field(default=["/static"])
+    ignore_endswith: list[str] = Field(default=[])
 
 
 class LoggerConfigPM(BaseLoggerConfigPM):
