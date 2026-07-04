@@ -1,5 +1,20 @@
 # Changelog
 
+## v8.2.1 (2026-07-04)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.2.1 -->
+
+## What's Changed
+### 💥 Breaking Changes
+* build(deps): bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/58
+### ✨ Features
+* build(deps): bump https://github.com/igorshubovych/markdownlint-cli from v0.48.0 to 0.49.0 by @dependabot[bot] in https://github.com/bybatkhuu/module-fastapi-logging/pull/57
+### 🐛 Fixes
+* Upgrade dependencies and improve request handling by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/59
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.2.0...v8.2.1
+
 ## v8.2.0 (2026-06-17)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.2.0 -->
