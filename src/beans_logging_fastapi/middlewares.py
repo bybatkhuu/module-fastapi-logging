@@ -44,8 +44,9 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
             _http_info["request_id"] = request.headers.get("X-Correlation-ID")
 
         # Set request_id to request state:
-        request.state.request_id = _http_info["request_id"]
+        request.state.request_id = _http_info.get("request_id")
 
+        _http_info["client_host"] = "0.0.0.0"  # nosec: B104
         if request.client:
             _http_info["client_host"] = request.client.host
 
@@ -59,7 +60,7 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
             )
 
         _http_info["request_port"] = request.url.port
-        _http_info["http_version"] = request.scope["http_version"]
+        _http_info["http_version"] = request.scope.get("http_version", "1.1")
 
         if self.has_proxy_headers:
             if "X-Real-IP" in request.headers:
@@ -159,11 +160,11 @@ class RequestHTTPInfoMiddleware(BaseHTTPMiddleware):
         if hasattr(request.state, "user_id"):
             _http_info["user_id"] = str(request.state.user_id)
 
-        _logger = logger.bind(request_id=_http_info["request_id"])
+        _logger = logger.bind(request_id=_http_info.get("request_id"))
 
         # Set http info to request state:
         request.state.logger = _logger
-        request.state.client_ip = _http_info.get("client_host", "")
+        request.state.client_host = _http_info.get("client_host")
         request.state.http_info = _http_info
         response: Response = await call_next(request)
         return response
@@ -204,10 +205,10 @@ class ResponseHTTPInfoMiddleware(BaseHTTPMiddleware):
                     "should be parseable to <float>!"
                 )
         else:
-            response.headers["X-Process-Time"] = str(_http_info["response_time"])
+            response.headers["X-Process-Time"] = str(_http_info.get("response_time", 0))
 
         if "X-Request-ID" not in response.headers:
-            response.headers["X-Request-ID"] = _http_info["request_id"]
+            response.headers["X-Request-ID"] = _http_info.get("request_id", "")
 
         if hasattr(request.state, "user_id"):
             _http_info["user_id"] = str(request.state.user_id)
@@ -330,19 +331,20 @@ class HttpAccessLogMiddleware(BaseHTTPMiddleware):
         # Http access log:
         _LEVEL = "INFO"
         _sub_format = self.sub_format
-        if _http_info["status_code"] < 200:
+        _status_code = _http_info.get("status_code", 200)
+        if _status_code < 200:
             _LEVEL = "DEBUG"
             _sub_format = f'<d>{_sub_format.replace("{status_code}", "<n><b><k>{status_code}</k></b></n>")}</d>'
-        elif (200 <= _http_info["status_code"]) and (_http_info["status_code"] < 300):
+        elif (200 <= _status_code) and (_status_code < 300):
             _LEVEL = "SUCCESS"
             _sub_format = f'<w>{_sub_format.replace("{status_code}", "<lvl>{status_code}</lvl>")}</w>'
-        elif (300 <= _http_info["status_code"]) and (_http_info["status_code"] < 400):
+        elif (300 <= _status_code) and (_status_code < 400):
             _LEVEL = "INFO"
             _sub_format = f'<d>{_sub_format.replace("{status_code}", "<n><b><c>{status_code}</c></b></n>")}</d>'
-        elif (400 <= _http_info["status_code"]) and (_http_info["status_code"] < 500):
+        elif (400 <= _status_code) and (_status_code < 500):
             _LEVEL = "WARNING"
             _sub_format = _sub_format.replace("{status_code}", "<r>{status_code}</r>")
-        elif 500 <= _http_info["status_code"]:
+        elif 500 <= _status_code:
             _LEVEL = "ERROR"
             _sub_format = (
                 f'{_sub_format.replace("{status_code}", "<n>{status_code}</n>")}'
