@@ -113,7 +113,7 @@ repos:
 
   # --- Markdown ---
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.49.0
+    rev: v0.49.1
     hooks:
       - id: markdownlint
         name: "📝 markdownlint - Lint markdown files"
@@ -154,7 +154,7 @@ repos:
         args: ["--skip=B101"] # skip assert-use warning
 
   # - repo: https://github.com/RobertCraigie/pyright-python
-  #   rev: v1.1.408
+  #   rev: v1.1.411
   #   hooks:
   #     - id: pyright
   #       name: "🐍 pyright - Static type checker"
@@ -167,23 +167,6 @@ repos:
         language: system
         entry: "python -m pyright"
         files: \.pyi?$
-
-  # --- Tests ---
-  # - repo: local
-  #   hooks:
-  #     - id: pytest-collect
-  #       name: "🧪 pytest-collect (local) - Validate test formatting"
-  #       language: system
-  #       entry: "python -m pytest --collect-only"
-  #       pass_filenames: false
-  #       always_run: true
-
-  #     - id: pytest
-  #       name: "🧪 pytest (local) - Run tests"
-  #       language: system
-  #       entry: "./scripts/test.sh -l -v -c"
-  #       pass_filenames: false
-  #       always_run: true
 
   # --- Cleanup ---
   # - repo: local
