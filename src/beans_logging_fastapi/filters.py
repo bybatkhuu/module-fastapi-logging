@@ -1,14 +1,10 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from loguru import Record
-
+from beans_logging.typing import Record
 from beans_logging.filters import all_handlers_filter
 
 from .constants import HTTP_ACCESS_STD_HANDLER_NAME
 
 
-def http_filter(record: "Record") -> bool:
+def http_filter(record: Record) -> bool:
     """Filter message only for http access log handler by checking 'http_info' key in extra.
 
     Args:
@@ -27,7 +23,7 @@ def http_filter(record: "Record") -> bool:
     return True
 
 
-def http_std_filter(record: "Record") -> bool:
+def http_std_filter(record: Record) -> bool:
     """Filter message only for http std log handler.
 
     Args:
@@ -46,7 +42,7 @@ def http_std_filter(record: "Record") -> bool:
     return True
 
 
-def http_all_file_filter(record: "Record") -> bool:
+def http_all_file_filter(record: Record) -> bool:
     """Filter message only for http file log handler.
 
     Args:
