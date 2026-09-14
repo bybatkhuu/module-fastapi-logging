@@ -1,14 +1,12 @@
 import json
 from typing import Any
 from zoneinfo import ZoneInfo
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from loguru import Record
+from beans_logging.typing import Record
 
 
 def http_file_format(
-    record: "Record",
+    record: Record,
     format_: str = (
         '{client_host} {request_id} {user_id} [{datetime}] "{method} {url_path} HTTP/{http_version}" '
         '{status_code} {content_length} "{h_referer}" "{h_user_agent}" {response_time}'
@@ -62,7 +60,7 @@ def http_file_format(
     return "{extra[http_message]}\n"
 
 
-def http_json_format(record: "Record") -> str:
+def http_json_format(record: Record) -> str:
     """Http access json log file format.
 
     Args:
@@ -89,7 +87,7 @@ def http_json_format(record: "Record") -> str:
     return "{extra[http_serialized]}\n"
 
 
-def id_std_format(record: "Record") -> str:
+def id_std_format(record: Record) -> str:
     """Std output log format with user_id, trace_id, and request_id.
 
     Args:
@@ -114,7 +112,7 @@ def id_std_format(record: "Record") -> str:
     return _format
 
 
-def id_file_format(record: "Record") -> str:
+def id_file_format(record: Record) -> str:
     """File log format with user_id, trace_id, and request_id.
 
     Args:
