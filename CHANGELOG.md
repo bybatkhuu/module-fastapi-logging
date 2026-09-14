@@ -1,5 +1,16 @@
 # Changelog
 
+## v8.2.3 (2026-09-14)
+
+<!-- Release notes generated using configuration in .github/release.yml at v8.2.3 -->
+
+## What's Changed
+### 🐛 Fixes
+* Update Python version to 3.11 in workflows and configuration by @bybatkhuu in https://github.com/bybatkhuu/module-fastapi-logging/pull/66
+
+
+**Full Changelog**: https://github.com/bybatkhuu/module-fastapi-logging/compare/v8.2.2...v8.2.3
+
 ## v8.2.2 (2026-08-18)
 
 <!-- Release notes generated using configuration in .github/release.yml at v8.2.2 -->
